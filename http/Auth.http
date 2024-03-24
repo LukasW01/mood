@@ -1,0 +1,43 @@
+### Request 
+POST http://localhost:8080/api/v1/auth/register
+Content-Type: application/json
+
+{
+  "username": "lukaswigger",
+  "mail": "lukas@wigger.one",
+  "password": "password"
+}
+
+### Login
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "username": "username",
+  "password": "password"
+}
+
+> {% client.global.set("auth_token", response.body.token) %}
+
+### Update User
+PUT http://localhost:8080/api/v1/auth/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "username": "username",
+  "firstName": "user",
+  "lastName": "name",
+  "oldPassword": "password",
+  "newPassword": "securePassword"
+}
+
+### Delete User
+DELETE http://localhost:8080/api/v1/auth/delete
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "username": "username",
+  "password": "securePassword"
+}
