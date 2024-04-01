@@ -26,19 +26,19 @@ class Mailgun {
     @Inject @ConfigProperty(name = "mailgun.base_url")
     private lateinit var mailgunBaseUrl: String
 
-    fun sendMessage(message: Message): CompletableFuture<MessageResponse> = try {
-        mailgunMessagesApi().sendMessageAsync(mailgunDomain, message)
-    } catch (e: Exception) {
-        Sentry.captureException(e)
-        CompletableFuture<MessageResponse>()
-    }
-    
     @Produces
     fun mailgunMessagesApi(): MailgunMessagesApi = MailgunClient.config(mailgunBaseUrl, mailgunApi)
         .logLevel(Logger.Level.BASIC)
         .retryer(Retryer.Default())
         .options(Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
         .createAsyncApi(MailgunMessagesApi::class.java)
+
+    fun sendMessage(message: Message): CompletableFuture<MessageResponse> = try {
+        mailgunMessagesApi().sendMessageAsync(mailgunDomain, message)
+    } catch (e: Exception) {
+        Sentry.captureException(e)
+        CompletableFuture<MessageResponse>()
+    }
     
     fun buildMessage(
         to: String,

@@ -7,7 +7,7 @@ import jakarta.json.bind.annotation.JsonbCreator
  * This file contains all incoming DTOs.
  * Here, [LoginDto] is a data class containing immutable class members
  */
-data class LoginDto(
+data class LoginDto @JsonbCreator constructor(
     val username: String,
     val password: String,
 )
@@ -20,34 +20,25 @@ data class RegisterDto @JsonbCreator constructor(
     val password: String,
 )
 
-data class UpdateDto(
-    val username: String,
+data class UpdateDto @JsonbCreator constructor(
+    val mail: String?,
     val firstName: String?,
     val lastName: String?,
     val oldPassword: String,
     val newPassword: String,
 )
 
-data class DeleteDto(
+data class DeleteDto @JsonbCreator constructor(
     val username: String,
     val password: String,
 )
-
-data class AuthResponseDto(
-    val token: String,
-    val user: UserDto,
-)
-
-data class UserDto(
-    val id: Long,
+data class UserDto @JsonbCreator constructor(
+    val mail: String,
     val username: String,
     val firstName: String?,
     val lastName: String?,
 )
 
-fun Users.toDto(): UserDto = UserDto(
-    id = id,
-    username = username,
-    firstName = firstName,
-    lastName = lastName,
+data class AuthResponseDto @JsonbCreator constructor(
+    val token: String,
 )

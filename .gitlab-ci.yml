@@ -1,0 +1,97 @@
+services:
+  - postgres:latest
+
+stages:
+  - gradle
+  - qodana
+  - docker
+
+default:
+  before_script: export GRADLE_USER_HOME="$(pwd)/.gradle"
+
+variables:
+  POSTGRES_DB: $DB
+  POSTGRES_USER: $DB_USER
+  POSTGRES_PASSWORD: $DB_PW
+  REGISTRY: ghcr.io
+
+gradle:test:
+  stage: gradle
+  image: gradle:jdk21-alpine
+  script: gradle test
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+
+gradle:diktat:
+  stage: gradle
+  image: gradle:jdk21-alpine
+  script: gradle diktatCheck
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+
+gradle:build:
+  stage: gradle
+  image: gradle:jdk21-alpine
+  script: gradle buildNativ
+  artifacts:
+    paths:
+      - build/*-runner
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+  only:
+    - tags
+
+qodana:
+  stage: qodana
+  image:
+    name: jetbrains/qodana-jvm-community:latest
+    entrypoint: [""]
+  variables:
+    QODANA_TOKEN: $qodana_token
+  script: qodana scan
+  artifacts:
+    paths:
+      - qodana/
+  cache:
+    key: "$CI_COMMIT_REF_NAME"
+    policy: push
+    paths:
+      - build
+      - .gradle
+  only:
+    - schedules
+
+docker_build:
+  stage: docker
+  services:
+    - docker:dind
+  before_script:
+    - docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script:
+    - docker build --pull -t "mood_kotlin" .
+    # latest tag
+    - docker tag "mood_kotlin" "$REGISTRY/$PROJECT_NAMESPACE/mood_kotlin:latest"
+    - docker push "$REGISTRY/$PROJECT_NAMESPACE/mood_kotlin:latest"
+    # version tag
+    - docker tag "mood_kotlin" "$REGISTRY/$PROJECT_NAMESPACE/mood_kotlin:$CI_COMMIT_TAG"
+    - docker push "$REGISTRY/$PROJECT_NAMESPACE/mood_kotlin:$CI_COMMIT_TAG"
+  image: docker:cli
+  only:
+    - tags
+

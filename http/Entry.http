@@ -4,13 +4,14 @@ Content-Type: application/json
 
 {
   "username": "username",
-  "password": "password"
+  "password": "securePassword"
 }
 
 > {% client.global.set("auth_token", response.body.token) %}
 
+
 ### Save a new mood-entry
-POST http://localhost:8080/api/v1/entry/save
+POST http://localhost:8080/api/v1/entry
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -18,7 +19,7 @@ Authorization: Bearer {{auth_token}}
   {
     "mood": "BAD",
     "journal": "I'm feeling bad today :/",
-    "date": "2027-01-01",
+    "date": "2023-03-10T00:00:00",
     "color": "#FF0000"
   }
 ]
@@ -26,7 +27,7 @@ Authorization: Bearer {{auth_token}}
 ### Get all mood-entries
 GET http://localhost:8080/api/v1/entry
 Content-Type: application/json
-#Authorization: Bearer {{auth_token}}
+Authorization: Bearer {{auth_token}}
 
 ### Get id of an entry
 GET http://localhost:8080/api/v1/entry/1
@@ -34,16 +35,17 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Update an entry
-PUT http://localhost:8080/api/v1/entry/update/1
+PUT http://localhost:8080/api/v1/entry/1
 Content-Type: application/json
-#uthorization: Bearer {{auth_token}}
+Authorization: Bearer {{auth_token}}
 
 {
+  "mood": "MEH",
   "journal": "I'm feeling badly today :/",
   "color": "#FF0000"
 }
 
 ### Delete an entry
-DELETE http://localhost:8080/api/v1/entry/delete/1
+DELETE http://localhost:8080/api/v1/entry/102
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}

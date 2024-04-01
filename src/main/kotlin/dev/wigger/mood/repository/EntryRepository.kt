@@ -3,7 +3,6 @@ package dev.wigger.mood.repository
 import dev.wigger.mood.model.Entry
 import io.quarkus.hibernate.orm.panache.PanacheRepository
 import jakarta.enterprise.context.ApplicationScoped
-import jakarta.transaction.Transactional
 
 @ApplicationScoped
 class EntryRepository: PanacheRepository<Entry> {

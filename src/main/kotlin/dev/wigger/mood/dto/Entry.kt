@@ -1,26 +1,25 @@
 package dev.wigger.mood.dto
 
-import dev.wigger.mood.util.annotation.MoodEnum
+import jakarta.json.bind.annotation.JsonbCreator
 import java.util.Date
 
-data class EntryDto(
+data class EntryDto @JsonbCreator constructor(
     var mood: String,
-    var journal: String,
-    var date: Date,
+    var journal: String?,
+    val date: Date,
     var color: String,
 )
 
-data class EntrySaveDto(
+data class EntrySaveDto @JsonbCreator constructor(
     var mood: String,
     var journal: String,
-    var date: Date,
+    val date: Date,
     var color: String,
 )
 
-data class EntryUpdateDto(
-    @MoodEnum
+data class EntryUpdateDto @JsonbCreator constructor(
     var mood: String?,
     var journal: String?,
-    var date: Date?,
+    val date: Date?,
     var color: String?,
 )
