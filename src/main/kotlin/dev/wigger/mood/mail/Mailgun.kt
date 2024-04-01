@@ -19,10 +19,13 @@ import java.util.concurrent.TimeUnit
 class Mailgun {
     @Inject @ConfigProperty(name = "mailgun.domain")
     private lateinit var mailgunDomain: String
+
     @Inject @ConfigProperty(name = "mailgun.from")
     private lateinit var mailgunFrom: String
+
     @Inject @ConfigProperty(name = "mailgun.api.key")
     private lateinit var mailgunApi: String
+
     @Inject @ConfigProperty(name = "mailgun.base_url")
     private lateinit var mailgunBaseUrl: String
 

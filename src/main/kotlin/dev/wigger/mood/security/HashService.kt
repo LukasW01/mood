@@ -13,10 +13,8 @@ class HashService {
      * @param password the string to be hashed
      * @return the hashed string
      */
-    fun hashPassword(password: String): String {
-        return Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 64)
-            .hash(22, 65536, 1, password.toCharArray())
-    }
+    fun hashPassword(password: String): String = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 64)
+        .hash(22, 65_536, 1, password.toCharArray())
     
     /**
      * checks whether the string matches the hash
@@ -24,8 +22,6 @@ class HashService {
      * @param hash the hashed string
      * @return true if hash(input) == hash, otherwise false
      */
-    fun verifyPassword(password: String, hash: String): Boolean {
-        return Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 64)
-            .verify(hash, password.toCharArray())
-    }
+    fun isHashedPassword(password: String, hash: String): Boolean = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 64)
+        .verify(hash, password.toCharArray())
 }

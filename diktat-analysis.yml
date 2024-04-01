@@ -11,6 +11,12 @@
   enabled: false
 - name: FILE_WILDCARD_IMPORTS
   enabled: false
+- name: ANNOTATION_NEW_LINE
+  enabled: false
+- name: FUNCTION_NAME_INCORRECT_CASE
+  enabled: false
+- name: WRONG_NEWLINES
+  enabled: false  
 - name: TOO_LONG_FUNCTION
   enabled: true
   ignoreAnnotated: [ Test ]
@@ -19,7 +25,7 @@
 - name: LONG_LINE
   enabled: true
   configuration:
-    lineLength: '125'
+    lineLength: '150'
 - name: TOO_MANY_PARAMETERS
   enabled: true
   configuration:

@@ -17,27 +17,27 @@ import jakarta.ws.rs.core.SecurityContext
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
 
-
-@Path("/api/v1") @ApplicationScoped @Produces("application/json") @Consumes("application/json") @SecurityScheme(scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
+@Path("/api/v1") @ApplicationScoped @Produces("application/json") @Consumes("application/json") @SecurityScheme(
+    scheme = "bearer",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+)
 class EntryController {
     @Inject
     private lateinit var entryService: EntryService
+
     @Inject
     private lateinit var usersService: UserService
     
     @GET @Path("/entry") @Authenticated
-    fun get(ctx: SecurityContext): List<EntryDto>? {
-        return usersService.findByUsername(ctx.userPrincipal.name)
-            ?.let { entryService.findByUserId(it.id) } 
-            ?: throw WebApplicationException("No Entry found", 400)
-    }
+    fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByUsername(ctx.userPrincipal.name)
+        ?.let { entryService.findByUserId(it.id) }
+        ?: throw WebApplicationException("No Entry found", 400)
     
     @GET @Path("/entry/{id}") @Authenticated
-    fun getByID(id: Long, ctx: SecurityContext): EntryDto {
-        return usersService.findByUsername(ctx.userPrincipal.name)
-            ?.let { entryService.findByIdAndUserId(id, it.id) } 
-            ?: throw WebApplicationException("No Entry found", 400)
-    }
+    fun getById(id: Long, ctx: SecurityContext): EntryDto = usersService.findByUsername(ctx.userPrincipal.name)
+        ?.let { entryService.findByIdAndUserId(id, it.id) }
+        ?: throw WebApplicationException("No Entry found", 400)
 
     @DELETE @Path("/entry/{id}") @Transactional @Authenticated
     fun delete(@PathParam("id") id: Long, ctx: SecurityContext) {
@@ -52,7 +52,7 @@ class EntryController {
     @PUT @Path("/entry/{id}") @Transactional @Authenticated
     fun update(@PathParam("id") id: Long, @Valid payload: EntryUpdateDto, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
-            ?.let { entryService.findEntityByIdAndUserId(id, it.id) } 
+            ?.let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 404)
         
         Log.info("Updating entry with id: '${entry.id}'")
@@ -66,14 +66,14 @@ class EntryController {
                 user = entry.user
             },
         )
-
     }
     
     @POST @Path("/entry") @Transactional @Authenticated
     fun save(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
-        val users = usersService.findByUsername(ctx.userPrincipal.name) ?: throw WebApplicationException("No User found", 404)
+        val users = usersService.findByUsername(ctx.userPrincipal.name)
+            ?: throw WebApplicationException("No User found", 404)
 
-        Log.info("Saving payload: '${payload}'")
+        Log.info("Saving payload: '$payload'")
         payload.forEach {
             entryService.persistOne(Entry().apply {
                 mood = it.mood
@@ -81,6 +81,7 @@ class EntryController {
                 date = it.date
                 color = it.color
                 user = users
-            })}
+            })
+        }
     }
 }

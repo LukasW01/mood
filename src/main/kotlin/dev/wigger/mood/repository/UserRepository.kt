@@ -5,7 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheRepository
 import jakarta.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
-class UserRepository: PanacheRepository<Users> {
+class UserRepository : PanacheRepository<Users> {
     fun persistOne(users: Users): Pair<Unit, Users> = persistAndFlush(users) to users
     fun deleteByUsername(name: String) = delete("username = ?1", name)
     fun findByUsername(username: String): Users? = find("username = ?1", username).firstResult()

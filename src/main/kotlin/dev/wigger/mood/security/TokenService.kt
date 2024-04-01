@@ -13,11 +13,10 @@ class TokenService {
      * @param users user object that contains details e.g. username or user id
      * @return jwt with claimed values. signed by the *.pem keys in resources folder.
      */
-    fun createToken(users: Users): String {
-        return Jwt.claims().subject(users.username)
-            .claim("userId", users.id)
-            .issuedAt(Instant.now())
-            .expiresAt(Instant.now().plus(30L, ChronoUnit.DAYS))
-            .sign()
-    }
+    fun createToken(users: Users): String = Jwt.claims()
+        .subject(users.username)
+        .claim("userId", users.id)
+        .issuedAt(Instant.now())
+        .expiresAt(Instant.now().plus(30L, ChronoUnit.DAYS))
+        .sign()
 }

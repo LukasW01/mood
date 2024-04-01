@@ -12,7 +12,7 @@ class UserService {
 
     fun persistOne(users: Users) = userRepository.persistOne(users)
 
-    fun deleteByUsername(name: String) =  userRepository.deleteByUsername(name)
+    fun deleteByUsername(name: String) = userRepository.deleteByUsername(name)
 
     fun findByUsername(name: String): Users? = userRepository.findByUsername(name)
     

@@ -1,6 +1,6 @@
 package dev.wigger.mood.dto
 
-data class ErrorResponse (
+data class ErrorResponse(
     val text: String,
-    val status: Int, 
+    val status: Int,
 )

@@ -1,5 +1,5 @@
 package dev.wigger.mood.dto
 
-data class IP (
+data class Ip(
     val ip: String,
 )

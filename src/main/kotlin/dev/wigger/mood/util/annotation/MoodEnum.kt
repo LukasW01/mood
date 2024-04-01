@@ -10,5 +10,5 @@ import kotlin.reflect.KClass
 annotation class MoodEnum(
     val message: String = "Invalid mood value",
     val groups: Array<KClass<*>> = [],
-    val payload: Array<KClass<out Payload>> = []
+    val payload: Array<KClass<out Payload>> = [],
 )

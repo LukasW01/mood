@@ -11,17 +11,19 @@ import java.util.*
 
 @Entity
 @Table(name = "entry")
-class Entry: PanacheEntity() {
-    @MoodEnum @NotBlank
-    lateinit var mood: String
+class Entry : PanacheEntity() {
     @Nullable
     var journal: String? = null
+
+    @MoodEnum @NotBlank
+    lateinit var mood: String
+
     @NotNull @JsonbDateFormat(value = "yyyy-MM-dd")
     lateinit var date: Date
-    @NotBlank 
+
+    @NotBlank
     lateinit var color: String
+
     @ManyToOne(cascade = [CascadeType.REMOVE]) @JoinColumn(name = "user_id")
     lateinit var user: Users
 }
-
-

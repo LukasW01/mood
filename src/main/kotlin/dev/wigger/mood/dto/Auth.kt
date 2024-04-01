@@ -1,6 +1,5 @@
 package dev.wigger.mood.dto
 
-import dev.wigger.mood.model.Users
 import jakarta.json.bind.annotation.JsonbCreator
 
 /**

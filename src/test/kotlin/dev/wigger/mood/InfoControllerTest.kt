@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-
 class InfoControllerTest {
     private val infoController = InfoController()
 

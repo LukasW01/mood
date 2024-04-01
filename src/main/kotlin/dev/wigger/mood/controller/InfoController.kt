@@ -1,7 +1,7 @@
 package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.ErrorResponse
-import dev.wigger.mood.dto.IP
+import dev.wigger.mood.dto.Ip
 import io.vertx.ext.web.RoutingContext
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -17,10 +17,11 @@ class InfoController {
     private lateinit var context: RoutingContext
     
     @GET @Path("/ip")
-    fun ip(): IP = IP(context.request().remoteAddress().host())
+    fun ip(): Ip = Ip(context.request().remoteAddress().host())
 
     @GET @Path("/health")
-    fun health(): Response = Response.status(Response.Status.OK).entity(ErrorResponse("Healthy!", Response.Status.OK.statusCode)).build()
+    fun health(): Response = Response.status(Response.Status.OK).entity(ErrorResponse("Healthy!",
+        Response.Status.OK.statusCode)).build()
     
     @VisibleForTesting
     fun setContext(context: RoutingContext) {

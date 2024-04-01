@@ -5,14 +5,12 @@ import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
 class MoodEnumValidator : ConstraintValidator<MoodEnum, String> {
-    override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
-        return try {
-            if (value != null) {
-                Mood.valueOf(value)
-            }
-            true
-        } catch (e: IllegalArgumentException) {
-            false
+    override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean = try {
+        value?.let {
+            Mood.valueOf(value)
         }
+        true
+    } catch (e: IllegalArgumentException) {
+        false
     }
 }
