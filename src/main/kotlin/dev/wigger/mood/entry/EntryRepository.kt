@@ -1,6 +1,5 @@
 package dev.wigger.mood.entry
 
-import dev.wigger.mood.entry.Entry
 import io.quarkus.hibernate.orm.panache.PanacheRepository
 import jakarta.enterprise.context.ApplicationScoped
 

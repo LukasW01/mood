@@ -2,10 +2,10 @@ package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.*
 import dev.wigger.mood.mail.Mailgun
-import dev.wigger.mood.user.Users
 import dev.wigger.mood.security.HashService
 import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.user.UserService
+import dev.wigger.mood.user.Users
 
 import io.quarkus.logging.Log
 import io.quarkus.qute.Location
@@ -62,7 +62,8 @@ class AuthController {
         }
 
         mailgun.sendMessage(
-            mailgun.buildMessage(user.mail, "Login", loginTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user)).render())
+            mailgun.buildMessage(user.mail, "Login",
+                loginTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user)).render()),
         )
         
         Log.info("Login successful. Returning token and user data of LoginResponseDto")
@@ -79,7 +80,8 @@ class AuthController {
         }
 
         mailgun.sendMessage(
-            mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to payload)).render())
+            mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
+                "user" to payload)).render()),
         )
         
         Log.info("Registering user with username: '${payload.username}'")
@@ -90,7 +92,6 @@ class AuthController {
             lastName = payload.lastName
             password = hashService.hashPassword(payload.password)
         })
-
     }
     
     @PUT @Path("/auth/update") @Authenticated @Transactional

@@ -1,8 +1,6 @@
 package dev.wigger.mood.entry
 
 import dev.wigger.mood.dto.EntryDto
-import dev.wigger.mood.entry.Entry
-import dev.wigger.mood.entry.EntryRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import java.util.*

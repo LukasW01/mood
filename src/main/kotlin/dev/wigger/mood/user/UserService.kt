@@ -1,7 +1,5 @@
 package dev.wigger.mood.user
 
-import dev.wigger.mood.user.Users
-import dev.wigger.mood.user.UserRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 
