@@ -1,7 +1,7 @@
-package dev.wigger.mood.service
+package dev.wigger.mood.user
 
-import dev.wigger.mood.model.Users
-import dev.wigger.mood.repository.UserRepository
+import dev.wigger.mood.user.Users
+import dev.wigger.mood.user.UserRepository
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 

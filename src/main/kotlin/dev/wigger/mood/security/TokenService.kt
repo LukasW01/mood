@@ -1,6 +1,6 @@
 package dev.wigger.mood.security
 
-import dev.wigger.mood.model.Users
+import dev.wigger.mood.user.Users
 import io.smallrye.jwt.build.Jwt
 import jakarta.enterprise.context.ApplicationScoped
 import java.time.Instant

@@ -40,4 +40,4 @@ nb-configuration.xml
 
 # JWT signing key
 *.pem
-jwt/
+src/main/resources/jwt/

@@ -1,13 +1,17 @@
 package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.*
-import dev.wigger.mood.model.Users
+import dev.wigger.mood.mail.Mailgun
+import dev.wigger.mood.user.Users
 import dev.wigger.mood.security.HashService
 import dev.wigger.mood.security.TokenService
-import dev.wigger.mood.service.UserService
+import dev.wigger.mood.user.UserService
 
 import io.quarkus.logging.Log
+import io.quarkus.qute.Location
+import io.quarkus.qute.Template
 import io.quarkus.security.Authenticated
+import io.vertx.ext.web.RoutingContext
 import jakarta.annotation.security.PermitAll
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -36,6 +40,18 @@ class AuthController {
 
     @Inject
     private lateinit var userService: UserService
+    
+    @Inject
+    private lateinit var mailgun: Mailgun
+
+    @Location("login.html")
+    private lateinit var loginTemplate: Template
+    
+    @Location("register.html")
+    private lateinit var registerTemplate: Template
+
+    @Inject
+    private lateinit var context: RoutingContext
 
     @POST @Path("/auth/login") @PermitAll @Transactional
     fun login(@Valid payload: LoginDto): AuthResponseDto {
@@ -44,6 +60,10 @@ class AuthController {
             Log.warn("Login failed. The password entered is incorrect.")
             throw WebApplicationException("Login failed", 403)
         }
+
+        mailgun.sendMessage(
+            mailgun.buildMessage(user.mail, "Login", loginTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user)).render())
+        )
         
         Log.info("Login successful. Returning token and user data of LoginResponseDto")
         return AuthResponseDto(
@@ -57,6 +77,10 @@ class AuthController {
             Log.warn("Registration failed. The username is already taken.")
             throw WebApplicationException("Registration failed", 400)
         }
+
+        mailgun.sendMessage(
+            mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to payload)).render())
+        )
         
         Log.info("Registering user with username: '${payload.username}'")
         userService.persistOne(Users().apply {
@@ -66,6 +90,7 @@ class AuthController {
             lastName = payload.lastName
             password = hashService.hashPassword(payload.password)
         })
+
     }
     
     @PUT @Path("/auth/update") @Authenticated @Transactional

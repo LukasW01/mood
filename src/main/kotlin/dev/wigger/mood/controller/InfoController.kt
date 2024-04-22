@@ -20,8 +20,7 @@ class InfoController {
     fun ip(): Ip = Ip(context.request().remoteAddress().host())
 
     @GET @Path("/health")
-    fun health(): Response = Response.status(Response.Status.OK).entity(ErrorResponse("Healthy!",
-        Response.Status.OK.statusCode)).build()
+    fun health(): Response = Response.status(Response.Status.OK).entity(ErrorResponse("Healthy!", Response.Status.OK.statusCode)).build()
     
     @VisibleForTesting
     fun setContext(context: RoutingContext) {

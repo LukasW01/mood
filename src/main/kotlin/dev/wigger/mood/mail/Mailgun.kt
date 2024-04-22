@@ -46,10 +46,11 @@ class Mailgun {
     fun buildMessage(
         to: String,
         subject: String,
+        html: String,
     ): Message = Message.builder()
         .from("Mood <$mailgunFrom>")
         .to(to)
         .subject(subject)
-        .html("test")
+        .html(html)
         .build()
 }

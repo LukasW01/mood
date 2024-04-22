@@ -3,9 +3,9 @@ package dev.wigger.mood.controller
 import dev.wigger.mood.dto.EntryDto
 import dev.wigger.mood.dto.EntrySaveDto
 import dev.wigger.mood.dto.EntryUpdateDto
-import dev.wigger.mood.model.Entry
-import dev.wigger.mood.service.EntryService
-import dev.wigger.mood.service.UserService
+import dev.wigger.mood.entry.Entry
+import dev.wigger.mood.entry.EntryService
+import dev.wigger.mood.user.UserService
 import io.quarkus.logging.Log
 import io.quarkus.security.Authenticated
 import jakarta.enterprise.context.ApplicationScoped

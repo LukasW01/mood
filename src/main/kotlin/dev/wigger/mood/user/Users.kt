@@ -1,4 +1,4 @@
-package dev.wigger.mood.model
+package dev.wigger.mood.user
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity
 import jakarta.annotation.Nullable

@@ -1,6 +1,6 @@
-package dev.wigger.mood.repository
+package dev.wigger.mood.user
 
-import dev.wigger.mood.model.Users
+import dev.wigger.mood.user.Users
 import io.quarkus.hibernate.orm.panache.PanacheRepository
 import jakarta.enterprise.context.ApplicationScoped
 

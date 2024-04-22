@@ -1,5 +1,6 @@
-package dev.wigger.mood.model
+package dev.wigger.mood.entry
 
+import dev.wigger.mood.user.Users
 import dev.wigger.mood.util.annotation.MoodEnum
 import io.quarkus.hibernate.orm.panache.PanacheEntity
 import jakarta.annotation.Nullable
