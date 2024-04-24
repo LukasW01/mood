@@ -16,6 +16,7 @@ import jakarta.ws.rs.*
 import jakarta.ws.rs.core.SecurityContext
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
+import java.util.UUID
 
 @Path("/api/v1") @ApplicationScoped @Produces("application/json") @Consumes("application/json") @SecurityScheme(
     scheme = "bearer",
@@ -35,12 +36,12 @@ class EntryController {
         ?: throw WebApplicationException("No Entry found", 400)
     
     @GET @Path("/entry/{id}") @Authenticated
-    fun getById(id: Long, ctx: SecurityContext): EntryDto = usersService.findByUsername(ctx.userPrincipal.name)
+    fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByUsername(ctx.userPrincipal.name)
         ?.let { entryService.findByIdAndUserId(id, it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
 
     @DELETE @Path("/entry/{id}") @Transactional @Authenticated
-    fun delete(@PathParam("id") id: Long, ctx: SecurityContext) {
+    fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
             ?.let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 400)
@@ -50,7 +51,7 @@ class EntryController {
     }
     
     @PUT @Path("/entry/{id}") @Transactional @Authenticated
-    fun update(@PathParam("id") id: Long, @Valid payload: EntryUpdateDto, ctx: SecurityContext) {
+    fun update(@PathParam("id") id: UUID, @Valid payload: EntryUpdateDto, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
             ?.let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 404)
