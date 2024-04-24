@@ -46,6 +46,6 @@ Authorization: Bearer {{auth_token}}
 }
 
 ### Delete an entry
-DELETE http://localhost:8080/api/v1/entry/102
+DELETE http://localhost:8080/api/v1/entry/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}

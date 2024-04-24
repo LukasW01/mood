@@ -1,6 +1,8 @@
 package dev.wigger.mood.dto
 
+import dev.wigger.mood.user.Users
 import jakarta.json.bind.annotation.JsonbCreator
+import java.util.UUID
 
 /**
  * This file contains all incoming DTOs.
@@ -31,7 +33,9 @@ data class DeleteDto @JsonbCreator constructor(
     val username: String,
     val password: String,
 )
+
 data class UserDto @JsonbCreator constructor(
+    val id: UUID,
     val mail: String,
     val username: String,
     val firstName: String?,
@@ -40,4 +44,14 @@ data class UserDto @JsonbCreator constructor(
 
 data class AuthResponseDto @JsonbCreator constructor(
     val token: String,
+    val user: UserDto
 )
+
+fun Users.toDto(): UserDto = UserDto(
+    id = id,
+    username = username,
+    mail = mail,
+    lastName = lastName,
+    firstName = firstName,
+)
+

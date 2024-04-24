@@ -3,8 +3,8 @@ POST http://localhost:8080/api/v1/auth/register
 Content-Type: application/json
 
 {
-  "username": "lukas",
-  "mail": "lukas@wigger.one",
+  "username": "username",
+  "mail": "mail@example.com",
   "password": "securePassword"
 }
 

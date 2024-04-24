@@ -69,15 +69,13 @@ class AuthController {
         Log.info("Login successful. Returning token and user data of LoginResponseDto")
         return AuthResponseDto(
             token = tokenService.createToken(user),
+            user = user.toDto()
         )
     }
     
     @POST @Path("/auth/register") @PermitAll @Transactional
     fun register(@Valid payload: RegisterDto) {
-        userService.findByUsername(payload.username)?.let {
-            Log.warn("Registration failed. The username is already taken.")
-            throw WebApplicationException("Registration failed", 400)
-        }
+        userService.findByUsername(payload.username)?.let { throw WebApplicationException("Registration failed", 400) }
 
         mailgun.sendMessage(
             mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
