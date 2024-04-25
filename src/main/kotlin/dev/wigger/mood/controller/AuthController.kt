@@ -69,7 +69,7 @@ class AuthController {
         Log.info("Login successful. Returning token and user data of LoginResponseDto")
         return AuthResponseDto(
             token = tokenService.createToken(user),
-            user = user.toDto()
+            user = user.toDto(),
         )
     }
     

@@ -13,13 +13,13 @@ import java.util.*
 
 @Entity
 class Entry : PanacheEntityBase() {
+    @Nullable
+    var journal: String? = null
+
     @Id
     @GeneratedValue(generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     lateinit var id: UUID
-
-    @Nullable
-    var journal: String? = null
 
     @MoodEnum @NotBlank
     lateinit var mood: String

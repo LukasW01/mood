@@ -44,7 +44,7 @@ data class UserDto @JsonbCreator constructor(
 
 data class AuthResponseDto @JsonbCreator constructor(
     val token: String,
-    val user: UserDto
+    val user: UserDto,
 )
 
 fun Users.toDto(): UserDto = UserDto(
@@ -54,4 +54,3 @@ fun Users.toDto(): UserDto = UserDto(
     lastName = lastName,
     firstName = firstName,
 )
-
