@@ -1,5 +1,5 @@
 ### Login
-POST http://localhost:8080/api/v1/auth/login
+POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 
 
 ### Save a new mood-entry
-POST http://localhost:8080/api/v1/entry
+POST http://localhost:8080/entry
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -25,17 +25,17 @@ Authorization: Bearer {{auth_token}}
 ]
 
 ### Get all mood-entries
-GET http://localhost:8080/api/v1/entry
+GET http://localhost:8080/entry
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Get id of an entry
-GET http://localhost:8080/api/v1/entry/1
+GET http://localhost:8080/entry/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Update an entry
-PUT http://localhost:8080/api/v1/entry/1
+PUT http://localhost:8080/entry/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -46,6 +46,6 @@ Authorization: Bearer {{auth_token}}
 }
 
 ### Delete an entry
-DELETE http://localhost:8080/api/v1/entry/1
+DELETE http://localhost:8080/entry/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}

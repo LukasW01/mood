@@ -6,9 +6,9 @@ import java.util.UUID
 
 @ApplicationScoped
 class EntryRepository : PanacheRepository<Entry> {
-    fun findByUserId(userId: UUID): List<Entry>? = find("user.id = ?1", userId).list()
+    fun findByUserId(userId: Long): List<Entry>? = find("user.id = ?1", userId).list()
 
-    fun findByIdAndUserId(id: UUID, userId: UUID): Entry? = find("id = ?1 and user.id = ?2", id, userId).firstResult()
+    fun findByIdAndUserId(id: UUID, userId: Long): Entry? = find("id = ?1 and user.id = ?2", id, userId).firstResult()
 
     fun persistOne(entry: Entry) = persistAndFlush(entry)
 

@@ -16,9 +16,9 @@ class UserRepository : PanacheRepository<Users> {
     
     fun findByToken(token: UUID): Users? = find("token = ?1", token).firstResult()
     
-    fun findByID(id: UUID): Users? = find("id = ?1", id).firstResult()
+    fun findByID(id: Long): Users? = find("id = ?1", id).firstResult()
     
-    fun updateOne(id: UUID, users: Users) {
+    fun updateOne(id: Long, users: Users) {
         findByID(id)?.apply {
             username = users.username
             mail = users.mail

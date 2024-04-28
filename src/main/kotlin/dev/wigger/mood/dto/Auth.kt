@@ -40,7 +40,7 @@ data class AuthResponseDto @JsonbCreator constructor(
 )
 
 data class UserDto @JsonbCreator constructor(
-    val id: UUID,
+    val id: Long,
     val mail: String,
     val username: String,
     val firstName: String?,

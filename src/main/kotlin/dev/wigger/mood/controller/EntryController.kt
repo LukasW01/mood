@@ -6,8 +6,7 @@ import dev.wigger.mood.dto.EntryUpdateDto
 import dev.wigger.mood.entry.Entry
 import dev.wigger.mood.entry.EntryService
 import dev.wigger.mood.user.UserService
-import io.quarkus.logging.Log
-import io.quarkus.security.Authenticated
+import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.transaction.Transactional
@@ -20,7 +19,7 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
 import java.util.UUID
 
 @ApplicationScoped
-@Path("/v1") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
+@Path("/") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
 @SecurityScheme(scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
 class EntryController {
     @Inject
@@ -29,33 +28,37 @@ class EntryController {
     @Inject
     private lateinit var usersService: UserService
     
-    @GET @Path("/entry") @Authenticated
+    @GET @Path("/entry")
+    @RolesAllowed("user")
     fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByUsername(ctx.userPrincipal.name)
         .let { entryService.findByUserId(it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
     
-    @GET @Path("/entry/{id}") @Authenticated
+    @GET @Path("/entry/{id}")
+    @RolesAllowed("user")
     fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByUsername(ctx.userPrincipal.name)
         .let { entryService.findByIdAndUserId(id, it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
 
-    @DELETE @Path("/entry/{id}") @Transactional @Authenticated
+    @DELETE @Path("/entry/{id}")
+    @RolesAllowed("user")
+    @Transactional
     fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
             .let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 400)
         
-        Log.info("Deleting entry with id: '${entry.id}'")
         entryService.deleteById(entry.id)
     }
     
-    @PUT @Path("/entry/{id}") @Transactional @Authenticated
+    @PUT @Path("/entry/{id}")
+    @RolesAllowed("user")
+    @Transactional
     fun update(@PathParam("id") id: UUID, @Valid payload: EntryUpdateDto, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
             .let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 404)
         
-        Log.info("Updating entry with id: '${entry.id}'")
         entryService.updateOne(
             id,
             Entry().apply {
@@ -68,11 +71,12 @@ class EntryController {
         )
     }
     
-    @POST @Path("/entry") @Transactional @Authenticated
+    @POST @Path("/entry")
+    @RolesAllowed("user")
+    @Transactional
     fun save(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
         val users = usersService.findByUsername(ctx.userPrincipal.name)
 
-        Log.info("Saving payload: '$payload'")
         payload.forEach {
             entryService.persistOne(Entry().apply {
                 mood = it.mood

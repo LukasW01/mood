@@ -20,5 +20,5 @@ class UserService {
     
     fun findByToken(token: UUID): Users = userRepository.findByToken(token) ?: throw WebApplicationException("User does not exist", 403)
     
-    fun updateOne(id: UUID, users: Users) = userRepository.updateOne(id, users)
+    fun updateOne(id: Long, users: Users) = userRepository.updateOne(id, users)
 }

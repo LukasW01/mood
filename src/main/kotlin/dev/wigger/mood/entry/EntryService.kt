@@ -10,11 +10,11 @@ class EntryService {
     @Inject
     private lateinit var entryRepository: EntryRepository
 
-    fun findByUserId(userId: UUID): List<EntryDto>? = entryRepository.findByUserId(userId)?.map { entry -> mapToDto(entry) }
+    fun findByUserId(userId: Long): List<EntryDto>? = entryRepository.findByUserId(userId)?.map { entry -> mapToDto(entry) }
 
-    fun findByIdAndUserId(id: UUID, userId: UUID): EntryDto? = entryRepository.findByIdAndUserId(id, userId)?.let { entry -> mapToDto(entry) }
+    fun findByIdAndUserId(id: UUID, userId: Long): EntryDto? = entryRepository.findByIdAndUserId(id, userId)?.let { entry -> mapToDto(entry) }
     
-    fun findEntityByIdAndUserId(id: UUID, userId: UUID): Entry? = entryRepository.findByIdAndUserId(id, userId)
+    fun findEntityByIdAndUserId(id: UUID, userId: Long): Entry? = entryRepository.findByIdAndUserId(id, userId)
     
     fun updateOne(id: UUID, entry: Entry) = entryRepository.updateOne(id, entry)
 

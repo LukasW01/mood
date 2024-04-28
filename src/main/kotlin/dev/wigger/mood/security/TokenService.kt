@@ -15,6 +15,7 @@ class TokenService {
      */
     fun createToken(users: Users): String = Jwt.claims()
         .subject(users.username)
+        .groups("user")
         .claim("userId", users.id)
         .issuedAt(Instant.now())
         .expiresAt(Instant.now().plus(30L, ChronoUnit.DAYS))
