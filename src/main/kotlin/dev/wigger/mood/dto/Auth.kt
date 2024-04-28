@@ -57,6 +57,16 @@ data class UserResponseDto @JsonbCreator constructor(
     val lastName: String?,
 )
 
+data class MailResetDto @JsonbCreator constructor(
+    val mail: String,
+)
+
+data class ResetDto @JsonbCreator constructor(
+    val password: String,
+    val passwordRepeat: String,
+    val token: UUID,
+)
+
 fun Users.toDto(): UserDto = UserDto(
     id = id,
     username = username,

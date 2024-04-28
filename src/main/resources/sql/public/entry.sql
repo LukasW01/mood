@@ -8,7 +8,7 @@ create table if not exists public.entry
     journal varchar(1000),
     mood    varchar(255),
     user_id bigint
-        constraint fkftvnb1ll0a4l98cgcif439dvp
+        constraint entry_user_id_fkey
             references public.users
 );
 

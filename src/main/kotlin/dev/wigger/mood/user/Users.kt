@@ -39,4 +39,6 @@ class Users : PanacheEntityBase() {
     
     @NotNull
     lateinit var dateJoined: LocalDateTime
+    
+    var resetToken: UUID? = null
 }

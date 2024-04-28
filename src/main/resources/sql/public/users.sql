@@ -14,6 +14,7 @@ create table if not exists public.users
         constraint username_index
             unique,
     firstname  varchar(255),
-    lastname   varchar(255)
+    lastname   varchar(255),
+    resettoken uuid
 );
 
