@@ -11,7 +11,7 @@ import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.Response
 import org.jetbrains.annotations.VisibleForTesting
 
-@Path("/api/v1") @ApplicationScoped @Produces("application/json")
+@Path("/v1") @ApplicationScoped @Produces("application/json")
 class InfoController {
     @Inject
     private lateinit var context: RoutingContext

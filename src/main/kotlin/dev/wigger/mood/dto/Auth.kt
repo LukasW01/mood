@@ -34,6 +34,11 @@ data class DeleteDto @JsonbCreator constructor(
     val password: String,
 )
 
+data class AuthResponseDto @JsonbCreator constructor(
+    val token: String,
+    val user: UserDto,
+)
+
 data class UserDto @JsonbCreator constructor(
     val id: UUID,
     val mail: String,
@@ -42,9 +47,14 @@ data class UserDto @JsonbCreator constructor(
     val lastName: String?,
 )
 
-data class AuthResponseDto @JsonbCreator constructor(
+data class UserResponseDto @JsonbCreator constructor(
+    val id: UUID,
+    val mail: String,
+    val username: String,
     val token: String,
-    val user: UserDto,
+    val verified: Boolean,
+    val firstName: String?,
+    val lastName: String?,
 )
 
 fun Users.toDto(): UserDto = UserDto(

@@ -1,15 +1,15 @@
 ### Request 
-POST http://localhost:8080/api/v1/auth/register
+POST http://localhost:8080/v1/auth/register
 Content-Type: application/json
 
 {
   "username": "username",
-  "mail": "mail@example.com",
+  "mail": "lukas@wigger.one",
   "password": "securePassword"
 }
 
 ### Login
-POST http://localhost:8080/api/v1/auth/login
+POST http://localhost:8080/v1/auth/login
 Content-Type: application/json
 
 {
@@ -20,7 +20,7 @@ Content-Type: application/json
 > {% client.global.set("auth_token", response.body.token) %}
 
 ### Update User
-PUT http://localhost:8080/api/v1/auth/update
+PUT http://localhost:8080/v1/auth/update
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
@@ -32,11 +32,11 @@ Authorization: Bearer {{auth_token}}
 }
 
 ### Delete User
-DELETE http://localhost:8080/api/v1/auth/delete
+DELETE http://localhost:8080/v1/auth/delete
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
   "username": "username",
-  "password": "password"
+  "password": "securePassword"
 }

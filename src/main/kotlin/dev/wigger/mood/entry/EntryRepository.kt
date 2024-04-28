@@ -7,10 +7,15 @@ import java.util.UUID
 @ApplicationScoped
 class EntryRepository : PanacheRepository<Entry> {
     fun findByUserId(userId: UUID): List<Entry>? = find("user.id = ?1", userId).list()
+
     fun findByIdAndUserId(id: UUID, userId: UUID): Entry? = find("id = ?1 and user.id = ?2", id, userId).firstResult()
+
     fun persistOne(entry: Entry) = persistAndFlush(entry)
+
     fun delete(id: UUID) = delete("id = ?1", id)
+
     fun findByID(id: UUID): Entry? = find("id = ?1", id).firstResult()
+
     fun updateOne(id: UUID, entry: Entry) {
         findByID(id)?.apply {
             mood = entry.mood
