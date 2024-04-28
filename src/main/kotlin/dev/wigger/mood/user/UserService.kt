@@ -16,7 +16,9 @@ class UserService {
 
     fun findByUsername(name: String): Users = userRepository.findByUsername(name) ?: throw WebApplicationException("User does not exist", 403)
     
-    fun findByUsernameOrMail(username: String, mail: String): Users? = userRepository.findByUsernameOrMail(username, mail)?.let { throw WebApplicationException("Constraint violation", 400) }
+    fun findByUsernameOrMail(username: String, mail: String): Users? = userRepository.findByUsernameOrMail(username, mail)?.let {
+        throw WebApplicationException("Constraint violation", 400)
+    }
     
     fun findByMail(mail: String): Users = userRepository.findByMail(mail) ?: throw WebApplicationException("User does not exist", 404)
     

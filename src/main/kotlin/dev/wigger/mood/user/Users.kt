@@ -24,6 +24,7 @@ class Users : PanacheEntityBase() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
+    var resetToken: UUID? = null
 
     @Column(unique = true) @NotBlank
     lateinit var username: String
@@ -39,6 +40,4 @@ class Users : PanacheEntityBase() {
     
     @NotNull
     lateinit var dateJoined: LocalDateTime
-    
-    var resetToken: UUID? = null
 }

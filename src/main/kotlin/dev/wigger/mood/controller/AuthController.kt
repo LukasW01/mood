@@ -154,7 +154,7 @@ class AuthController {
 
             mailgun.sendMessage(
                 mailgun.buildMessage(user.mail, "Account verified!", verifyTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
-                    "user" to user, "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render())
+                    "user" to user, "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render()),
             )
         }
 
@@ -169,11 +169,12 @@ class AuthController {
         val user = userService.findByMail(payload.mail)
         
         val token = UUID.randomUUID()
-        userService.updateOne(user.id, user.apply { resetToken =  token})
+        userService.updateOne(user.id, user.apply { resetToken = token })
         
         mailgun.sendMessage(
             mailgun.buildMessage(user.mail, "Password reset",
-                resetTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user, "link" to "${domain.replaceFirst("/*$", "")}/auth/password/reset/confirm/${token}")).render()),
+                resetTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user,
+                    "link" to "${domain.replaceFirst("/*$", "")}/auth/password/reset/confirm/$token")).render()),
         )
     }
     
@@ -182,7 +183,8 @@ class AuthController {
     fun reset(token: UUID): String {
         val user = userService.findByResetToken(token)
         
-        return resetFormTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user, "year" to LocalDateTime.now().year)).render()
+        return resetFormTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user, "year" to LocalDateTime.now().year))
+            .render()
     }
     
     @PUT @Path("/auth/password/change/")
@@ -195,7 +197,8 @@ class AuthController {
             throw WebApplicationException("Passwords do not match", 400)
         }
         
-        userService.updateOne(user.id, user.apply { password = hashService.hashArgon(payload.password); resetToken = null})
+        userService.updateOne(user.id, user.apply { password = hashService.hashArgon(payload.password)
+            resetToken = null
+        })
     }
-    
 }
