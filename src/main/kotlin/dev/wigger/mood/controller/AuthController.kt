@@ -206,7 +206,7 @@ class AuthController {
     
     @POST @Path("/auth/password/reset/token")
     @PermitAll
-    fun token(@Valid payload: TokenUUIDDto): Response {
+    fun token(@Valid payload: TokenUuiddto): Response {
         return userService.findByResetToken(payload.token)?.let {
             Response.ok().build()
         } ?: Response.status(404).build()
