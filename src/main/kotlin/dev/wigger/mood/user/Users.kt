@@ -36,7 +36,7 @@ class Users : PanacheEntityBase() {
     lateinit var password: String
 
     @NotNull
-    lateinit var token: UUID
+    lateinit var verifyToken: UUID
     
     @NotNull
     lateinit var dateJoined: LocalDateTime

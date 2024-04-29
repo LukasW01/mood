@@ -100,14 +100,14 @@ class AuthController {
             firstName = payload.firstName
             lastName = payload.lastName
             password = hashService.hashArgon(payload.password)
-            token = UUID.randomUUID()
+            verifyToken = UUID.randomUUID()
             dateJoined = LocalDateTime.now()
             isVerified = false
         })
 
         mailgun.sendMessage(
             mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
-                "user" to payload, "link" to "${domain.replaceFirst("/*$", "")}/auth/verify/${user.token}")).render()),
+                "user" to payload, "link" to "${domain.replaceFirst("/*$", "")}/auth/verify/${user.verifyToken}")).render()),
         )
     }
 
@@ -147,7 +147,7 @@ class AuthController {
     @PermitAll
     @Transactional
     fun register(token: UUID): String {
-        val user = userService.findByToken(token)
+        val user = userService.findByVerifyToken(token)
 
         if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
             userService.updateOne(user.id, user.apply { isVerified = true })
@@ -197,7 +197,8 @@ class AuthController {
             throw WebApplicationException("Passwords do not match", 400)
         }
         
-        userService.updateOne(user.id, user.apply { password = hashService.hashArgon(payload.password)
+        userService.updateOne(user.id, user.apply { 
+            password = hashService.hashArgon(payload.password)
             resetToken = null
         })
     }

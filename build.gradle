@@ -16,6 +16,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.quarkus:quarkus-scheduler'
     implementation 'io.quarkus:quarkus-qute'
     implementation 'io.quarkus:quarkus-resteasy-reactive-jsonb'
     implementation 'io.quarkus:quarkus-hibernate-validator'
@@ -38,7 +39,6 @@ dependencies {
     implementation 'org.eclipse:yasson:3.0.3'
     implementation 'io.quarkiverse.bucket4j:quarkus-bucket4j:1.0.3'
     implementation 'org.mindrot:jbcrypt:0.4'
-    //implementation 'io.quarkus:quarkus-rest-qute'
     annotationProcessor 'io.quarkus:quarkus-panache-common'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
