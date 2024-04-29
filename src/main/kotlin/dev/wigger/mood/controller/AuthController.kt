@@ -10,6 +10,7 @@ import io.quarkiverse.bucket4j.runtime.RateLimited
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver
 import io.quarkus.qute.Location
 import io.quarkus.qute.Template
+import io.quarkus.security.Authenticated
 import io.vertx.ext.web.RoutingContext
 import jakarta.annotation.security.PermitAll
 import jakarta.annotation.security.RolesAllowed
@@ -94,21 +95,22 @@ class AuthController {
     @Transactional
     fun register(@Valid payload: RegisterDto) {
         userService.findByUsernameOrMail(payload.username, payload.mail)
+        val token = UUID.randomUUID()
 
-        val user = userService.persistOne(Users().apply {
+        userService.persistOne(Users().apply {
             username = payload.username
             mail = payload.mail
             firstName = payload.firstName
             lastName = payload.lastName
             password = hashService.hashArgon(payload.password)
-            verifyToken = UUID.randomUUID()
+            verifyToken = token
             dateJoined = LocalDateTime.now()
             isVerified = false
         })
 
         mailgun.sendMessage(
             mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
-                "user" to payload, "link" to "${domain.replaceFirst("/*$", "")}/auth/verify/${user.verifyToken}")).render()),
+                "user" to payload, "link" to "${domain.replaceFirst("/*$", "")}/auth/verify/$token")).render()),
         )
     }
 
@@ -135,8 +137,8 @@ class AuthController {
     @DELETE @Path("/auth/delete")
     @RolesAllowed("user")
     @Transactional
-    fun delete(@Valid payload: DeleteDto, ctx: SecurityContext) {
-        val user = userService.findByUsername(ctx.userPrincipal.name)
+    fun delete(@Valid payload: DeleteDto) {
+        val user = userService.findByUsername(payload.username)
         if (!hashService.isHashedArgon(payload.password, user.password)) {
             throw WebApplicationException("Login failed", 403)
         }
@@ -149,18 +151,17 @@ class AuthController {
     @Transactional
     fun register(token: UUID): String {
         val user = userService.findByVerifyToken(token)
-
+        val template = verifyTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user, "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render()
+        
         if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
             userService.updateOne(user.id, user.apply { isVerified = true })
 
             mailgun.sendMessage(
-                mailgun.buildMessage(user.mail, "Account verified!", verifyTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
-                    "user" to user, "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render()),
+                mailgun.buildMessage(user.mail, "Account verified!", template),
             )
         }
 
-        return verifyTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user,
-            "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render()
+        return template
     }
     
     @POST @Path("/auth/password/reset")
@@ -168,8 +169,8 @@ class AuthController {
     @Transactional
     fun reset(@Valid payload: MailResetDto) {
         val user = userService.findByMail(payload.mail)
-        
         val token = UUID.randomUUID()
+        
         userService.updateOne(user.id, user.apply { resetToken = token })
         
         mailgun.sendMessage(
@@ -207,13 +208,11 @@ class AuthController {
     @POST @Path("/auth/password/reset/token")
     @PermitAll
     fun token(@Valid payload: TokenUuiddto): Response {
-        return userService.findByResetToken(payload.token)?.let {
-            Response.ok().build()
-        } ?: Response.status(404).build()
+        return userService.findByResetToken(payload.token).let { Response.ok().build() }
     }
     
     @GET @Path("/auth/refresh")
-    @RolesAllowed("user")
+    @Authenticated
     fun refresh(ctx: SecurityContext): TokenDto {
         val user = userService.findByUsername(ctx.userPrincipal.name)
         
