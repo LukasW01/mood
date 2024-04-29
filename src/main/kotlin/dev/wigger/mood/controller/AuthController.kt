@@ -19,6 +19,7 @@ import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.core.SecurityContext
 import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType
@@ -187,7 +188,7 @@ class AuthController {
             .render()
     }
     
-    @PUT @Path("/auth/password/change/")
+    @PUT @Path("/auth/password/reset/change/")
     @PermitAll
     @Transactional
     fun reset(@Valid payload: ResetDto) {
@@ -197,9 +198,25 @@ class AuthController {
             throw WebApplicationException("Passwords do not match", 400)
         }
         
-        userService.updateOne(user.id, user.apply { 
+        userService.updateOne(user.id, user.apply {
             password = hashService.hashArgon(payload.password)
             resetToken = null
         })
+    }
+    
+    @POST @Path("/auth/password/reset/token")
+    @PermitAll
+    fun token(@Valid payload: TokenUUIDDto): Response {
+        return userService.findByResetToken(payload.token)?.let {
+            Response.ok().build()
+        } ?: Response.status(404).build()
+    }
+    
+    @GET @Path("/auth/refresh")
+    @RolesAllowed("user")
+    fun refresh(ctx: SecurityContext): TokenDto {
+        val user = userService.findByUsername(ctx.userPrincipal.name)
+        
+        return TokenDto(tokenService.createToken(user, if (user.isVerified) "user" else "unverified"))
     }
 }

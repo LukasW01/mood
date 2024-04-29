@@ -3,6 +3,7 @@ package dev.wigger.mood.user
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase
 import jakarta.annotation.Nullable
 import jakarta.persistence.*
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import java.time.LocalDateTime
@@ -25,11 +26,11 @@ class Users : PanacheEntityBase() {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
     var resetToken: UUID? = null
-
-    @Column(unique = true) @NotBlank
+    
+    @NotBlank
     lateinit var username: String
 
-    @NotBlank
+    @NotBlank @Email
     lateinit var mail: String
 
     @NotBlank

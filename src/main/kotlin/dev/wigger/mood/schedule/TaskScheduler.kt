@@ -9,7 +9,6 @@ import jakarta.transaction.Transactional
 
 @ApplicationScoped
 class TaskScheduler {
-    
     @Inject
     lateinit var userService: UserService
 

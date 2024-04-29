@@ -67,6 +67,14 @@ data class ResetDto @JsonbCreator constructor(
     val token: UUID,
 )
 
+data class TokenDto @JsonbCreator constructor(
+    val token: String,
+)
+
+data class TokenUuiddto @JsonbCreator constructor(
+    val token: UUID,
+)
+
 fun Users.toDto(): UserDto = UserDto(
     id = id,
     username = username,
