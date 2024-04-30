@@ -1,14 +1,10 @@
 plugins {
     id 'org.jetbrains.kotlin.jvm' version "1.9.22"
     id "org.jetbrains.kotlin.plugin.allopen" version "1.9.22"
-    id "io.sentry.jvm.gradle" version "4.3.1"
     id 'io.quarkus'
     id "com.saveourtool.diktat" version "2.0.0"
     id "com.diffplug.spotless" version "5.10.0"
 }
-
-group 'dev.wigger.mood'
-version '0.5'
 
 repositories {
     mavenCentral()
@@ -16,6 +12,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'io.quarkus:quarkus-container-image-docker'
     implementation 'io.quarkus:quarkus-scheduler'
     implementation 'io.quarkus:quarkus-qute'
     implementation 'io.quarkus:quarkus-resteasy-reactive-jsonb'
@@ -45,6 +42,16 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:5.11.0'
 }
 
+group 'dev.wigger.mood'
+version '0.5'
+
+allOpen {
+    annotation("jakarta.ws.rs.Path")
+    annotation("jakarta.enterprise.context.ApplicationScoped")
+    annotation("jakarta.persistence.Entity")
+    annotation("io.quarkus.test.junit.QuarkusTest")
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_21
     targetCompatibility = JavaVersion.VERSION_21
@@ -56,12 +63,6 @@ kotlin {
 
 test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
-}
-allOpen {
-    annotation("jakarta.ws.rs.Path")
-    annotation("jakarta.enterprise.context.ApplicationScoped")
-    annotation("jakarta.persistence.Entity")
-    annotation("io.quarkus.test.junit.QuarkusTest")
 }
 
 compileKotlin {
@@ -80,15 +81,4 @@ spotless {
     kotlinGradle {
         diktat()
     }
-}
-
-sentry {
-    // Generates a JVM (Java, Kotlin, etc.) source bundle and uploads your source code to Sentry.
-    // This enables source context, allowing you to see your source
-    // code as part of your stack traces in Sentry.
-    includeSourceContext = true
-
-    org = "215a50a44047"
-    projectName = "mood-quarkus"
-    authToken = System.getenv("SENTRY_AUTH_TOKEN")
 }

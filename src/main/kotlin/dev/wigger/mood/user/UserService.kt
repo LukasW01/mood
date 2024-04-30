@@ -28,7 +28,11 @@ class UserService {
     
     fun updateOne(id: Long, users: Users) = userRepository.updateOne(id, users)
 
-    fun findByUsernameOrMail(username: String, mail: String): Users? = userRepository.findByUsernameOrMail(username, mail)?.let {
+    fun findByUsernameOrMailException(username: String, mail: String): Users? = userRepository.findByUsernameOrMail(username, mail)?.let {
+        throw WebApplicationException("Constraint violation", 400)
+    }
+
+    fun findByMailException(mail: String): Users? = userRepository.findByMail(mail)?.let {
         throw WebApplicationException("Constraint violation", 400)
     }
 }

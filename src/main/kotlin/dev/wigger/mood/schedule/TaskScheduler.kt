@@ -10,7 +10,7 @@ import jakarta.transaction.Transactional
 @ApplicationScoped
 class TaskScheduler {
     @Inject
-    lateinit var userService: UserService
+    private lateinit var userService: UserService
 
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")

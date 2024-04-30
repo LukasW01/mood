@@ -12,6 +12,7 @@ import org.hibernate.annotations.GenericGenerator
 import java.util.*
 
 @Entity
+@Table(name = "entry")
 class Entry : PanacheEntityBase() {
     @Nullable
     var journal: String? = null
