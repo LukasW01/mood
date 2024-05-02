@@ -12,7 +12,7 @@ ARG PROJECT=mood
 ARG VERSION=0.5
 
 WORKDIR /app
-COPY --from=builder "/gradle/build/$PROJECT-$VERSION-native-image-source-jar/$PROJECT-$VERSION-runner" "/app/application"
+COPY --from=builder "/gradle/build/$PROJECT-$VERSION-native-image-source-jar/" "/app/build/"
 VOLUME ["/app/jwt"]
 
 RUN chown -R $USER /app \
@@ -20,4 +20,4 @@ RUN chown -R $USER /app \
 
 EXPOSE 8080
 USER 1001
-ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["./application/build/$PROJECT-$VERSION-runner", "-Dquarkus.http.host=0.0.0.0"]
