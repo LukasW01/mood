@@ -1,6 +1,6 @@
-# Mood API
+# mood
 
-> Mood API is a RESTful API for mood tracking.
+> A RESTful API for mood tracking.
 
 # Qodana
 
