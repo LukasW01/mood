@@ -21,4 +21,4 @@ RUN chown 1001 /app \
 
 EXPOSE 8080
 USER 1001
-ENTRYPOINT ["./application/build/$PROJECT-$VERSION-runner", "-Dquarkus.http.host=0.0.0.0"]
+ENTRYPOINT ["./build/mood-0.5-runner", "-Dquarkus.http.host=0.0.0.0"]
