@@ -15,8 +15,9 @@ WORKDIR /app
 COPY --from=builder "/gradle/build/$PROJECT-$VERSION-native-image-source-jar/" "/app/build/"
 VOLUME ["/app/jwt"]
 
-RUN chown -R $USER /app \
-    && chmod "g+rwX" /app
+RUN chown 1001 /work \
+    && chmod "g+rwX" /work \
+    && chown 1001:root /work
 
 EXPOSE 8080
 USER 1001
