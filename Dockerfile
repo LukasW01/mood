@@ -8,12 +8,8 @@ RUN gradle build -Dquarkus.package.type=native -x spotlessKotlin diktatCheck
 
 ## Stage 2 : Add build artifacts to a micro base image, tuned for Quarkus native executables
 FROM quay.io/quarkus/quarkus-micro-image:2.0
-ARG USER=kotlin
-ARG PORT=8080
 ARG PROJECT=mood
 ARG VERSION=0.5
-
-RUN adduser --disabled-password --gecos "" $USER
 
 WORKDIR /app
 COPY --from=builder "/gradle/build/$PROJECT-$VERSION-native-image-source-jar/$PROJECT-$VERSION-runner" "/app/application"
@@ -22,6 +18,6 @@ VOLUME ["/app/jwt"]
 RUN chown -R $USER /app \
     && chmod "g+rwX" /app
 
-EXPOSE $PORT
-USER $USER
+EXPOSE 8080
+USER 1001
 ENTRYPOINT ["./application", "-Dquarkus.http.host=0.0.0.0"]
