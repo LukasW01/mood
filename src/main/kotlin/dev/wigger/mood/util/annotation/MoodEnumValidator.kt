@@ -1,6 +1,6 @@
 package dev.wigger.mood.util.annotation
 
-import dev.wigger.mood.util.Mood
+import dev.wigger.mood.util.enums.Mood
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 

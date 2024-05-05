@@ -1,4 +1,4 @@
-package dev.wigger.mood.util
+package dev.wigger.mood.util.enums
 
 enum class Mood {
     AWESOME,
