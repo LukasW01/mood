@@ -1,9 +1,9 @@
 name: Docker Image
 
 on:
-  tag:
-    types:
-      - created
+  push:
+    tags:
+      - '*'
   workflow_dispatch:
     inputs:
       custom_tag_extension:
