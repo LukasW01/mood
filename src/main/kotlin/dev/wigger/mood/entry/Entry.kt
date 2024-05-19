@@ -1,7 +1,7 @@
 package dev.wigger.mood.entry
 
 import dev.wigger.mood.user.Users
-import dev.wigger.mood.util.annotation.MoodEnum
+import dev.wigger.mood.util.annotation.MoodAnnotation
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase
 import jakarta.annotation.Nullable
 import jakarta.json.bind.annotation.JsonbDateFormat
@@ -22,7 +22,7 @@ class Entry : PanacheEntityBase() {
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     lateinit var id: UUID
 
-    @MoodEnum @NotBlank
+    @MoodAnnotation @NotBlank
     lateinit var mood: String
 
     @NotNull @JsonbDateFormat(value = "yyyy-MM-dd")

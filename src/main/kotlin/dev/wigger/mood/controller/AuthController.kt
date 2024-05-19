@@ -4,12 +4,13 @@ import dev.wigger.mood.dto.*
 import dev.wigger.mood.mail.Mailgun
 import dev.wigger.mood.security.HashService
 import dev.wigger.mood.security.TokenService
+import dev.wigger.mood.template.Templates
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.user.Users
+import dev.wigger.mood.util.PasswordStrength.PasswordStrength
+import dev.wigger.mood.util.enums.Roles
 import io.quarkiverse.bucket4j.runtime.RateLimited
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver
-import io.quarkus.qute.Location
-import io.quarkus.qute.Template
 import io.quarkus.security.Authenticated
 import io.vertx.ext.web.RoutingContext
 import jakarta.annotation.security.PermitAll
@@ -22,7 +23,6 @@ import jakarta.ws.rs.*
 import jakarta.ws.rs.core.MediaType
 import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.core.SecurityContext
-import org.eclipse.microprofile.config.inject.ConfigProperty
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
 import java.time.LocalDateTime
@@ -49,43 +49,19 @@ class AuthController {
     @Inject
     private lateinit var mailgun: Mailgun
 
-    @Inject
-    private lateinit var context: RoutingContext
-
-    @Location("login.html")
-    private lateinit var loginTemplate: Template
-    
-    @Location("register.html")
-    private lateinit var registerTemplate: Template
-    
-    @Location("verify.html")
-    private lateinit var verifyTemplate: Template
-    
-    @Location("reset.html")
-    private lateinit var resetTemplate: Template
-    
-    @Location("reset-form.html")
-    private lateinit var resetFormTemplate: Template
-
-    @Inject @ConfigProperty(name = "domain")
-    private lateinit var domain: String
-
     @POST @Path("/auth/login")
     @PermitAll
     @Transactional
-    fun login(@Valid payload: LoginDto): AuthResponseDto {
+    fun login(@Valid payload: LoginDto, context: RoutingContext): AuthResponseDto {
         val user = userService.findByUsername(payload.username)
         if (!hashService.isHashedArgon(payload.password, user.password)) {
             throw WebApplicationException("Login failed", 403)
         }
 
-        mailgun.sendMessage(
-            mailgun.buildMessage(user.mail, "Login",
-                loginTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user)).render()),
-        )
+        mailgun.sendMessage(user.mail, "Login", Templates.login(user, context.request().remoteAddress().host()).render())
 
         return AuthResponseDto(
-            token = tokenService.createToken(user, if (user.isVerified) "user" else "unverified"),
+            token = tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED),
             user = user.toDto(),
         )
     }
@@ -93,25 +69,27 @@ class AuthController {
     @POST @Path("/auth/register")
     @PermitAll
     @Transactional
-    fun register(@Valid payload: RegisterDto) {
+    fun register(@Valid payload: RegisterDto, context: RoutingContext) {
         userService.findByUsernameOrMailException(payload.username, payload.mail)
-        val token = UUID.randomUUID()
+        
+        if (!PasswordStrength.measure(payload.password)) {
+            throw WebApplicationException("Password too weak", 400)
+        }
 
-        userService.persistOne(Users().apply {
+        val user = Users().apply {
             username = payload.username
             mail = payload.mail
             firstName = payload.firstName
             lastName = payload.lastName
             password = hashService.hashArgon(payload.password)
-            verifyToken = token
-            dateJoined = LocalDateTime.now()
+            verifyToken = UUID.randomUUID()
             isVerified = false
-        })
+            dateJoined = LocalDateTime.now()
+        }
 
-        mailgun.sendMessage(
-            mailgun.buildMessage(payload.mail, "Register", registerTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
-                "user" to payload, "link" to "${domain.replaceFirst("/*$", "")}/auth/verify/$token")).render()),
-        )
+        userService.persistOne(user)
+        mailgun.sendMessage(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(), 
+            "https://${context.request().authority()}/auth/verify/${user.verifyToken}").render())
     }
 
     @PUT @Path("/auth/update")
@@ -148,49 +126,42 @@ class AuthController {
         userService.deleteByUsername(payload.username)
     }
 
-    @GET @Path("/auth/verify/{token}") @Produces(MediaType.TEXT_HTML)
+    @GET @Path("/auth/verify/{token}")
+    @Produces(MediaType.TEXT_HTML) @Consumes(MediaType.TEXT_PLAIN)
     @PermitAll
     @Transactional
-    fun register(token: UUID): String {
+    fun register(token: UUID, context: RoutingContext): String {
         val user = userService.findByVerifyToken(token)
         
         if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
             userService.updateOne(user.id, user.apply { isVerified = true })
 
-            mailgun.sendMessage(
-                mailgun.buildMessage(user.mail, "Account verified!", verifyTemplate.data(mapOf("ip" to context.request().remoteAddress().host(),
-                    "user" to user,
-                    "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render()),
-            )
+            mailgun.sendMessage(user.mail, "Account verified!", Templates.verify(user, context.request().remoteAddress().host()).render())
         }
 
-        return verifyTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user,
-            "yesterday" to LocalDateTime.now().minusDays(1), "year" to LocalDateTime.now().year)).render()
+        return Templates.verify(user, context.request().remoteAddress().host()).render()
     }
     
     @POST @Path("/auth/password/reset")
     @PermitAll
     @Transactional
-    fun reset(@Valid payload: MailResetDto) {
+    fun reset(@Valid payload: MailResetDto, context: RoutingContext) {
         val user = userService.findByMail(payload.mail)
         val token = UUID.randomUUID()
         
         userService.updateOne(user.id, user.apply { resetToken = token })
-        
-        mailgun.sendMessage(
-            mailgun.buildMessage(user.mail, "Password reset",
-                resetTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user,
-                    "link" to "${domain.replaceFirst("/*$", "")}/auth/password/reset/confirm/$token")).render()),
-        )
+
+        mailgun.sendMessage(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(),
+                "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
     }
     
-    @GET @Path("/auth/password/reset/confirm/{token}") @Produces(MediaType.TEXT_HTML)
+    @GET @Path("/auth/password/reset/confirm/{token}")
+    @Produces(MediaType.TEXT_HTML) @Consumes(MediaType.TEXT_PLAIN)
     @PermitAll
-    fun reset(token: UUID): String {
+    fun reset(token: UUID, context: RoutingContext): String {
         val user = userService.findByResetToken(token)
-        
-        return resetFormTemplate.data(mapOf("ip" to context.request().remoteAddress().host(), "user" to user, "year" to LocalDateTime.now().year))
-            .render()
+
+        return Templates.resetForm(user, context.request().remoteAddress().host()).render()
     }
     
     @PUT @Path("/auth/password/reset/change/")
@@ -220,6 +191,6 @@ class AuthController {
     fun refresh(ctx: SecurityContext): TokenDto {
         val user = userService.findByUsername(ctx.userPrincipal.name)
         
-        return TokenDto(tokenService.createToken(user, if (user.isVerified) "user" else "unverified"))
+        return TokenDto(tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED))
     }
 }

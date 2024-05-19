@@ -29,19 +29,19 @@ class EntryController {
     private lateinit var usersService: UserService
     
     @GET @Path("/entry")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByUsername(ctx.userPrincipal.name)
         .let { entryService.findByUserId(it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
     
     @GET @Path("/entry/{id}")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByUsername(ctx.userPrincipal.name)
         .let { entryService.findByIdAndUserId(id, it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
 
     @DELETE @Path("/entry/{id}")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     @Transactional
     fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
@@ -52,7 +52,7 @@ class EntryController {
     }
     
     @PUT @Path("/entry/{id}")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     @Transactional
     fun update(@PathParam("id") id: UUID, @Valid payload: EntryUpdateDto, ctx: SecurityContext) {
         val entry = usersService.findByUsername(ctx.userPrincipal.name)
@@ -72,7 +72,7 @@ class EntryController {
     }
     
     @POST @Path("/entry")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     @Transactional
     fun save(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
         val users = usersService.findByUsername(ctx.userPrincipal.name)

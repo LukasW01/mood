@@ -8,19 +8,14 @@ import jakarta.inject.Inject
 import jakarta.transaction.Transactional
 
 @ApplicationScoped
-class TaskScheduler {
+class TaskSchedule {
     @Inject
     private lateinit var userService: UserService
 
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")
-    fun deleteUnverifiedAccount(execution: ScheduledExecution) {
+    fun midnight(execution: ScheduledExecution) {
         userService.deleteUnverifiedAndOldUsers()
-    }
-    
-    @Transactional
-    @Scheduled(cron = "0 0 * * * ?")
-    fun updateResetTokenToNull(execution: ScheduledExecution) {
         userService.updateResetTokenToNull()
     }
 }

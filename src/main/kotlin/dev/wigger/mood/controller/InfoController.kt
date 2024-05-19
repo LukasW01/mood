@@ -16,17 +16,9 @@ import org.jetbrains.annotations.VisibleForTesting
 @ApplicationScoped
 @Path("/") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
 class InfoController {
-    @Inject
-    private lateinit var context: RoutingContext
-    
     @GET @Path("/ip")
-    fun ip(): Ip = Ip(context.request().remoteAddress().host())
+    fun ip(context: RoutingContext): Ip = Ip(context.request().remoteAddress().host())
 
     @GET @Path("/health")
     fun health(): Response = Response.status(Response.Status.OK).entity(ErrorResponse("Healthy!", Response.Status.OK.statusCode)).build()
-    
-    @VisibleForTesting
-    fun setContext(context: RoutingContext) {
-        this.context = context
-    }
 }

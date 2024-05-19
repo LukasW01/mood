@@ -23,6 +23,9 @@ class Mailgun {
     @Inject @ConfigProperty(name = "mailgun.from")
     private lateinit var mailgunFrom: String
 
+    @Inject @ConfigProperty(name = "mailgun.name")
+    private lateinit var mailgunName: String
+
     @Inject @ConfigProperty(name = "mailgun.api.key")
     private lateinit var mailgunApi: String
 
@@ -36,21 +39,14 @@ class Mailgun {
         .options(Request.Options(10, TimeUnit.SECONDS, 60, TimeUnit.SECONDS, true))
         .createAsyncApi(MailgunMessagesApi::class.java)
 
-    fun sendMessage(message: Message): CompletableFuture<MessageResponse> = try {
-        mailgunMessagesApi().sendMessageAsync(mailgunDomain, message)
+    fun sendMessage(
+        to: String,
+        subject: String,
+        html: String, 
+    ): CompletableFuture<MessageResponse> = try {
+        mailgunMessagesApi().sendMessageAsync(mailgunDomain, Message.builder().from("$mailgunName <$mailgunFrom>").to(to).subject(subject).html(html).build())
     } catch (e: Exception) {
         Sentry.captureException(e)
         CompletableFuture<MessageResponse>()
     }
-    
-    fun buildMessage(
-        to: String,
-        subject: String,
-        html: String,
-    ): Message = Message.builder()
-        .from("Mood <$mailgunFrom>")
-        .to(to)
-        .subject(subject)
-        .html(html)
-        .build()
 }
