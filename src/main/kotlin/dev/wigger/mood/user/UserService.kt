@@ -1,6 +1,5 @@
 package dev.wigger.mood.user
 
-import dev.wigger.mood.dto.UserDto
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.ws.rs.WebApplicationException

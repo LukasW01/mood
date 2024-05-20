@@ -32,7 +32,7 @@
     maxParameterListSize: '6'
   ignoreAnnotated: [ GetMapping ]
 - name: COMPLEX_EXPRESSION
-  enabled: true
+  enabled: false
   ignoreAnnotated: [ Test ]
 - name: TRAILING_COMMA
   enabled: true

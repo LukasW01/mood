@@ -7,8 +7,9 @@ import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.template.Templates
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.user.Users
-import dev.wigger.mood.util.PasswordStrength.PasswordStrength
 import dev.wigger.mood.util.enums.Roles
+import dev.wigger.mood.util.password.PasswordStrength
+
 import io.quarkiverse.bucket4j.runtime.RateLimited
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver
 import io.quarkus.security.Authenticated
@@ -25,6 +26,7 @@ import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.core.SecurityContext
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
+
 import java.time.LocalDateTime
 import java.util.*
 
@@ -72,7 +74,7 @@ class AuthController {
     fun register(@Valid payload: RegisterDto, context: RoutingContext) {
         userService.findByUsernameOrMailException(payload.username, payload.mail)
         
-        if (!PasswordStrength.measure(payload.password)) {
+        if (!PasswordStrength.hasSufficientStrength(payload.password)) {
             throw WebApplicationException("Password too weak", 400)
         }
 
@@ -88,7 +90,7 @@ class AuthController {
         }
 
         userService.persistOne(user)
-        mailgun.sendMessage(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(), 
+        mailgun.sendMessage(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(),
             "https://${context.request().authority()}/auth/verify/${user.verifyToken}").render())
     }
 
@@ -152,7 +154,7 @@ class AuthController {
         userService.updateOne(user.id, user.apply { resetToken = token })
 
         mailgun.sendMessage(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(),
-                "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
+            "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
     }
     
     @GET @Path("/auth/password/reset/confirm/{token}")
