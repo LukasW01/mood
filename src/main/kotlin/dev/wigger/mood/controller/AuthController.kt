@@ -7,8 +7,8 @@ import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.template.Templates
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.user.Users
+import dev.wigger.mood.util.Password
 import dev.wigger.mood.util.enums.Roles
-import dev.wigger.mood.util.password.PasswordStrength
 
 import io.quarkiverse.bucket4j.runtime.RateLimited
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver
@@ -36,7 +36,11 @@ import java.util.*
  */
 @ApplicationScoped
 @Path("/") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
-@SecurityScheme(scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
+@SecurityScheme(
+    scheme = "bearer",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+)
 @RateLimited(bucket = "auth", identityResolver = IpResolver::class)
 class AuthController {
     @Inject
@@ -55,7 +59,7 @@ class AuthController {
     @PermitAll
     @Transactional
     fun login(@Valid payload: LoginDto, context: RoutingContext): AuthResponseDto {
-        val user = userService.findByUsername(payload.username)
+        val user = userService.findByMail(payload.mail)
         if (!hashService.isHashedArgon(payload.password, user.password)) {
             throw WebApplicationException("Login failed", 403)
         }
@@ -72,14 +76,12 @@ class AuthController {
     @PermitAll
     @Transactional
     fun register(@Valid payload: RegisterDto, context: RoutingContext) {
-        userService.findByUsernameOrMailException(payload.username, payload.mail)
-        
-        if (!PasswordStrength.hasSufficientStrength(payload.password)) {
+        userService.findByMailException(payload.mail)
+        if (!Password.hasSufficientStrength(payload.password)) {
             throw WebApplicationException("Password too weak", 400)
         }
 
         val user = Users().apply {
-            username = payload.username
             mail = payload.mail
             firstName = payload.firstName
             lastName = payload.lastName
@@ -95,12 +97,12 @@ class AuthController {
     }
 
     @PUT @Path("/auth/update")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     @Transactional
     fun update(@Valid payload: UpdateDto, ctx: SecurityContext) {
-        val user = userService.findByUsername(ctx.userPrincipal.name)
-        if (!hashService.isHashedArgon(payload.oldPassword, user.password)) {
-            throw WebApplicationException("Login failed", 403)
+        val user = userService.findByMail(ctx.userPrincipal.name)
+        if (!hashService.isHashedArgon(payload.oldPassword, user.password) || !Password.hasSufficientStrength(payload.newPassword)) {
+            throw WebApplicationException("Login failed", 401)
         }
 
         payload.mail?.let { userService.findByMailException(it) }
@@ -117,15 +119,15 @@ class AuthController {
     }
     
     @DELETE @Path("/auth/delete")
-    @RolesAllowed("user")
+    @RolesAllowed("USER")
     @Transactional
     fun delete(@Valid payload: DeleteDto) {
-        val user = userService.findByUsername(payload.username)
+        val user = userService.findByMail(payload.mail)
         if (!hashService.isHashedArgon(payload.password, user.password)) {
             throw WebApplicationException("Login failed", 403)
         }
         
-        userService.deleteByUsername(payload.username)
+        userService.deleteByMail(payload.mail)
     }
 
     @GET @Path("/auth/verify/{token}")
@@ -184,14 +186,12 @@ class AuthController {
     
     @POST @Path("/auth/password/reset/token")
     @PermitAll
-    fun token(@Valid payload: TokenUuiddto): Response {
-        return userService.findByResetToken(payload.token).let { Response.ok().build() }
-    }
+    fun token(@Valid payload: TokenUuiddto): Response = userService.findByResetToken(payload.token).let { Response.ok().build() }
     
     @GET @Path("/auth/refresh")
     @Authenticated
     fun refresh(ctx: SecurityContext): TokenDto {
-        val user = userService.findByUsername(ctx.userPrincipal.name)
+        val user = userService.findByMail(ctx.userPrincipal.name)
         
         return TokenDto(tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED))
     }

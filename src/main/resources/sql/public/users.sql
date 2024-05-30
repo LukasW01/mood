@@ -12,9 +12,6 @@ create table if not exists public.users
             unique,
     password    varchar(255),
     resettoken  uuid,
-    username    varchar(255)
-        constraint username_index
-            unique,
     verifytoken uuid
 );
 

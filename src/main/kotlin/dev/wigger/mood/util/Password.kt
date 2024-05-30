@@ -1,4 +1,4 @@
-package dev.wigger.mood.util.password
+package dev.wigger.mood.util
 
 import com.nulabinc.zxcvbn.Zxcvbn
 
@@ -13,10 +13,8 @@ import com.nulabinc.zxcvbn.Zxcvbn
  * # 4 Very strong （guesses >= 10^10 + 5）
  * strength.score
  */
-class PasswordStrength {
+class Password {
     companion object {
-        fun hasSufficientStrength(password: String): Boolean {
-            return Zxcvbn().measure(password).score >= 3
-        }
+        fun hasSufficientStrength(password: String): Boolean = Zxcvbn().measure(password).score >= 2
     }
 }

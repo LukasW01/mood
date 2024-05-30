@@ -2,7 +2,6 @@ package dev.wigger.mood.user
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase
 import io.quarkus.security.jpa.Password
-import io.quarkus.security.jpa.Username
 import jakarta.annotation.Nullable
 import jakarta.persistence.*
 import jakarta.validation.constraints.Email
@@ -12,8 +11,7 @@ import java.time.LocalDateTime
 import java.util.*
 
 @Entity
-@Table(name = "users", indexes = [Index(name = "username_index", columnList = "username", unique = true), Index(name = "mail_index", columnList = "mail",
-    unique = true)])
+@Table(name = "users", indexes = [Index(name = "mail_index", columnList = "mail", unique = true)])
 class Users : PanacheEntityBase() {
     @Nullable
     var firstName: String? = null
@@ -28,9 +26,6 @@ class Users : PanacheEntityBase() {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
     var resetToken: UUID? = null
-    
-    @NotBlank @Username
-    lateinit var username: String
 
     @NotBlank @Email
     lateinit var mail: String

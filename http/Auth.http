@@ -3,7 +3,6 @@ POST http://localhost:8080/auth/register
 Content-Type: application/json
 
 {
-  "username": "username",
   "mail": "mail@example.com",
   "password": "securePassword"
 }
@@ -13,7 +12,7 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "username": "username",
+  "mail": "mail@example.com",
   "password": "securePassword"
 }
 
@@ -25,10 +24,10 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "firstName": "user",
-  "lastName": "name",
-  "oldPassword": "password",
-  "newPassword": "securePassword"
+  "firstName": "Lukas",
+  "lastName": "Wigger",
+  "oldPassword": "Muri.2024#!",
+  "newPassword": "Muri.2025#!"
 }
 
 ### Delete User
@@ -37,6 +36,14 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "username": "username",
+  "mail": "mail@example.com",
   "password": "securePassword"
+}
+
+### Password Reset (request)
+POST http://localhost:8080/auth/password/reset
+Content-Type: application/json
+
+{
+  "mail": "mail@example.com"
 }

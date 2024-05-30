@@ -9,12 +9,11 @@ import java.util.UUID
  * Here, [LoginDto] is a data class containing immutable class members
  */
 data class LoginDto @JsonbCreator constructor(
-    val username: String,
+    val mail: String,
     val password: String,
 )
 
 data class RegisterDto @JsonbCreator constructor(
-    val username: String,
     val mail: String,
     val firstName: String?,
     val lastName: String?,
@@ -30,7 +29,7 @@ data class UpdateDto @JsonbCreator constructor(
 )
 
 data class DeleteDto @JsonbCreator constructor(
-    val username: String,
+    val mail: String,
     val password: String,
 )
 
@@ -42,17 +41,6 @@ data class AuthResponseDto @JsonbCreator constructor(
 data class UserDto @JsonbCreator constructor(
     val id: Long,
     val mail: String,
-    val username: String,
-    val firstName: String?,
-    val lastName: String?,
-)
-
-data class UserResponseDto @JsonbCreator constructor(
-    val id: UUID,
-    val mail: String,
-    val username: String,
-    val token: String,
-    val verified: Boolean,
     val firstName: String?,
     val lastName: String?,
 )
@@ -77,7 +65,6 @@ data class TokenUuiddto @JsonbCreator constructor(
 
 fun Users.toDto(): UserDto = UserDto(
     id = id,
-    username = username,
     mail = mail,
     lastName = lastName,
     firstName = firstName,

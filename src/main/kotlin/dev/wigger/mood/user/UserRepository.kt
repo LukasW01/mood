@@ -9,11 +9,7 @@ import java.util.UUID
 class UserRepository : PanacheRepository<Users> {
     fun persistOne(users: Users) = persistAndFlush(users)
     
-    fun deleteByUsername(name: String) = delete("username = ?1", name)
-    
-    fun findByUsername(username: String): Users? = find("username = ?1", username).firstResult()
-    
-    fun findByUsernameOrMail(username: String, mail: String): Users? = find("username = ?1 or mail = ?2", username, mail).firstResult()
+    fun deleteByMail(mail: String) = delete("mail = ?1", mail)
 
     fun findByMail(mail: String): Users? = find("mail = ?1", mail).firstResult()
 
@@ -21,7 +17,7 @@ class UserRepository : PanacheRepository<Users> {
     
     fun findByResetToken(token: UUID): Users? = find("resetToken = ?1", token).firstResult()
     
-    fun findByID(id: Long): Users? = find("id = ?1", id).firstResult()
+    fun findById(id: Long): Users? = find("id = ?1", id).firstResult()
 
     fun deleteUnverifiedAndOldUsers() = delete("isVerified = ?1 and dateJoined < ?2", false, LocalDateTime.now().minusDays(1))
 
@@ -29,7 +25,6 @@ class UserRepository : PanacheRepository<Users> {
     
     fun updateOne(id: Long, users: Users) {
         findByID(id)?.apply {
-            username = users.username
             mail = users.mail
             lastName = users.lastName
             firstName = users.firstName

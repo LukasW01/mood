@@ -14,7 +14,7 @@ class EntryRepository : PanacheRepository<Entry> {
 
     fun delete(id: UUID) = delete("id = ?1", id)
 
-    fun findByID(id: UUID): Entry? = find("id = ?1", id).firstResult()
+    fun findById(id: UUID): Entry? = find("id = ?1", id).firstResult()
 
     fun updateOne(id: UUID, entry: Entry) {
         findByID(id)?.apply {

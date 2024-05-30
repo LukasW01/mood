@@ -12,11 +12,7 @@
 - name: FILE_WILDCARD_IMPORTS
   enabled: false
 - name: ANNOTATION_NEW_LINE
-  enabled: false
-- name: FUNCTION_NAME_INCORRECT_CASE
-  enabled: false
-- name: WRONG_NEWLINES
-  enabled: false  
+  enabled: false 
 - name: TOO_LONG_FUNCTION
   enabled: true
   ignoreAnnotated: [ Test ]

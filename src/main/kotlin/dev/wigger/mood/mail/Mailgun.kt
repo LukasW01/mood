@@ -44,7 +44,8 @@ class Mailgun {
         subject: String,
         html: String,
     ): CompletableFuture<MessageResponse> = try {
-        mailgunMessagesApi().sendMessageAsync(mailgunDomain, Message.builder().from("$mailgunName <$mailgunFrom>").to(to).subject(subject).html(html).build())
+        mailgunMessagesApi().sendMessageAsync(mailgunDomain, Message.builder().from("$mailgunName <$mailgunFrom>").to(to)
+            .subject(subject).html(html).build())
     } catch (e: Exception) {
         Sentry.captureException(e)
         CompletableFuture<MessageResponse>()

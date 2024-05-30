@@ -31,6 +31,6 @@ class Entry : PanacheEntityBase() {
     @NotBlank
     lateinit var color: String
 
-    @ManyToOne(cascade = [CascadeType.REMOVE]) @JoinColumn(name = "user_id")
+    @ManyToOne(cascade = [CascadeType.REMOVE], targetEntity = Users::class) @JoinColumn(name = "user_id")
     lateinit var user: Users
 }

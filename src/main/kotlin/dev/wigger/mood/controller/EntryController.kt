@@ -20,7 +20,11 @@ import java.util.UUID
 
 @ApplicationScoped
 @Path("/") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
-@SecurityScheme(scheme = "bearer", type = SecuritySchemeType.HTTP, bearerFormat = "JWT")
+@SecurityScheme(
+    scheme = "bearer",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+)
 class EntryController {
     @Inject
     private lateinit var entryService: EntryService
@@ -30,13 +34,13 @@ class EntryController {
     
     @GET @Path("/entry")
     @RolesAllowed("USER")
-    fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByUsername(ctx.userPrincipal.name)
+    fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByMail(ctx.userPrincipal.name)
         .let { entryService.findByUserId(it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
     
     @GET @Path("/entry/{id}")
     @RolesAllowed("USER")
-    fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByUsername(ctx.userPrincipal.name)
+    fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByMail(ctx.userPrincipal.name)
         .let { entryService.findByIdAndUserId(id, it.id) }
         ?: throw WebApplicationException("No Entry found", 400)
 
@@ -44,7 +48,7 @@ class EntryController {
     @RolesAllowed("USER")
     @Transactional
     fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
-        val entry = usersService.findByUsername(ctx.userPrincipal.name)
+        val entry = usersService.findByMail(ctx.userPrincipal.name)
             .let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 400)
         
@@ -54,8 +58,12 @@ class EntryController {
     @PUT @Path("/entry/{id}")
     @RolesAllowed("USER")
     @Transactional
-    fun update(@PathParam("id") id: UUID, @Valid payload: EntryUpdateDto, ctx: SecurityContext) {
-        val entry = usersService.findByUsername(ctx.userPrincipal.name)
+    fun update(
+        @PathParam("id") id: UUID,
+        @Valid payload: EntryUpdateDto,
+        ctx: SecurityContext,
+    ) {
+        val entry = usersService.findByMail(ctx.userPrincipal.name)
             .let { entryService.findEntityByIdAndUserId(id, it.id) }
             ?: throw WebApplicationException("No Entry found", 404)
         
@@ -75,7 +83,7 @@ class EntryController {
     @RolesAllowed("USER")
     @Transactional
     fun save(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
-        val users = usersService.findByUsername(ctx.userPrincipal.name)
+        val users = usersService.findByMail(ctx.userPrincipal.name)
 
         payload.forEach {
             entryService.persistOne(Entry().apply {

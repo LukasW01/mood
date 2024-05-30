@@ -5,9 +5,7 @@ import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 
 class MoodAnnotationValidator : ConstraintValidator<MoodAnnotation, String> {
-    override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean {
-        return value?.let {
-            Mood.entries.any { it.name == value }
-        } ?: true
-    }
+    override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean = value?.let {
+        Mood.entries.any { it.name == value }
+    } ?: false
 }
