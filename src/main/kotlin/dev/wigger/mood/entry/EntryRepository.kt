@@ -14,10 +14,10 @@ class EntryRepository : PanacheRepository<Entry> {
 
     fun delete(id: UUID) = delete("id = ?1", id)
 
-    fun findById(id: UUID): Entry? = find("id = ?1", id).firstResult()
+    fun findByUuid(id: UUID): Entry? = find("id = ?1", id).firstResult()
 
     fun updateOne(id: UUID, entry: Entry) {
-        findByID(id)?.apply {
+        findByUuid(id)?.apply {
             mood = entry.mood
             journal = entry.journal
             date = entry.date

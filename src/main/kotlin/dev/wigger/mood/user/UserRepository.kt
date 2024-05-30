@@ -17,14 +17,14 @@ class UserRepository : PanacheRepository<Users> {
     
     fun findByResetToken(token: UUID): Users? = find("resetToken = ?1", token).firstResult()
     
-    fun findById(id: Long): Users? = find("id = ?1", id).firstResult()
-
     fun deleteUnverifiedAndOldUsers() = delete("isVerified = ?1 and dateJoined < ?2", false, LocalDateTime.now().minusDays(1))
 
     fun updateResetTokenToNull() = update("resetToken = ?1", null as UUID?)
     
+    fun findByLongId(id: Long): Users? = find("id = ?1", id).firstResult()
+
     fun updateOne(id: Long, users: Users) {
-        findByID(id)?.apply {
+        findByLongId(id)?.apply {
             mail = users.mail
             lastName = users.lastName
             firstName = users.firstName
