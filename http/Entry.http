@@ -3,8 +3,8 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "mail": "mail@example",
-  "password": "securePassword"
+  "mail": "lukas@wigger.one",
+  "password": "Muri.2024#!"
 }
 
 > {% client.global.set("auth_token", response.body.token) %}
@@ -19,7 +19,7 @@ Authorization: Bearer {{auth_token}}
   {
     "mood": "BAD",
     "journal": "I'm feeling bad today :/",
-    "date": "2023-03-10T00:00:00",
+    "date": "2023-03-10",
     "color": "#FF0000"
   }
 ]
