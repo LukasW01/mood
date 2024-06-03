@@ -2,7 +2,6 @@ package dev.wigger.mood.dto
 
 import jakarta.json.bind.annotation.JsonbCreator
 import java.time.LocalDate
-import java.util.Date
 import java.util.UUID
 
 data class EntryDto @JsonbCreator constructor(
