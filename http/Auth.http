@@ -36,8 +36,8 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "mail": "lukas@wigger.one",
-  "password": "Muri.2025#!"
+  "mail": "mail@example.com",
+  "password": "securePassword"
 }
 
 ### Password Reset (request)

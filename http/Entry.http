@@ -3,8 +3,8 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "mail": "lukas@wigger.one",
-  "password": "Muri.2024#!"
+  "mail": "mail@example.com",
+  "password": "securePassword"
 }
 
 > {% client.global.set("auth_token", response.body.token) %}

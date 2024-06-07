@@ -8,7 +8,8 @@ import jakarta.json.bind.annotation.JsonbDateFormat
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
-import org.hibernate.annotations.GenericGenerator
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDate
 import java.util.*
 
@@ -19,8 +20,7 @@ class Entry : PanacheEntityBase() {
     var journal: String? = null
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+    @GeneratedValue(strategy = GenerationType.UUID)
     lateinit var id: UUID
 
     @MoodAnnotation @NotBlank
@@ -32,6 +32,8 @@ class Entry : PanacheEntityBase() {
     @NotBlank
     lateinit var color: String
 
-    @ManyToOne(cascade = [CascadeType.REMOVE], targetEntity = Users::class) @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY, targetEntity = Users::class)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "user_id")
     lateinit var user: Users
 }

@@ -1,4 +1,4 @@
-package dev.wigger.mood.template
+package dev.wigger.mood.templates
 
 import dev.wigger.mood.dto.*
 import dev.wigger.mood.user.Users
