@@ -12,6 +12,7 @@ class TokenService {
     /**
      * creates the jwt token
      * @param users user object that contains details e.g. username or user id
+     * @param groups role enum for any Role based authentication
      * @return jwt with claimed values. signed by the *.pem keys in resources folder.
      */
     fun createToken(users: Users, groups: Roles): String = Jwt.claims()
