@@ -1,6 +1,6 @@
 package dev.wigger.mood.util.enums
 
-enum class Mood {
+enum class Moods {
     AWESOME,
     GOOD,
     MEH,

@@ -4,11 +4,11 @@ import jakarta.validation.Constraint
 import jakarta.validation.Payload
 import kotlin.reflect.KClass
 
-@Constraint(validatedBy = [MoodAnnotationValidator::class])
+@Constraint(validatedBy = [MoodValidator::class])
 @Target(AnnotationTarget.FIELD, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class MoodAnnotation(
-    val message: String = "Invalid mood value",
+annotation class Mood(
+    val message: String = "Invalid mood",
     val groups: Array<KClass<*>> = [],
     val payload: Array<KClass<out Payload>> = [],
 )
