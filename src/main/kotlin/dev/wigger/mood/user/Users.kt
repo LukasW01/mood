@@ -27,6 +27,7 @@ class Users : PanacheEntityBase() {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
     var resetToken: UUID? = null
+    var sharingToken: UUID? = null
 
     @NotBlank @Email
     lateinit var mail: String

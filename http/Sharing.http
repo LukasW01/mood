@@ -1,0 +1,22 @@
+### Login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "mail": "lukas@wigger.one",
+  "password": "Muri.2024#!"
+}
+
+### Get all delegator of user
+GET http://localhost:8080/sharing/token/create
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### Connect users
+POST http://localhost:8080/sharing/token/connect
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "token": "13b4847e-d25c-4f50-a941-74ecf9289b55"
+}

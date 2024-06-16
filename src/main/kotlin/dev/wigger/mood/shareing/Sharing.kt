@@ -10,8 +10,8 @@ import org.hibernate.annotations.UpdateTimestamp
 import java.time.ZonedDateTime
 
 @Entity
-@Table(name = "shareing")
-class Shareing : PanacheEntityBase() {
+@Table(name = "sharing")
+class Sharing : PanacheEntityBase() {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0

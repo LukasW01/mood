@@ -1,7 +1,8 @@
 package dev.wigger.mood.entry
 
 import dev.wigger.mood.user.Users
-import dev.wigger.mood.util.annotation.MoodAnnotation
+import dev.wigger.mood.util.annotation.HexColor
+import dev.wigger.mood.util.annotation.Mood
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase
 import jakarta.annotation.Nullable
 import jakarta.json.bind.annotation.JsonbDateFormat
@@ -23,13 +24,13 @@ class Entry : PanacheEntityBase() {
     @GeneratedValue(strategy = GenerationType.UUID)
     lateinit var id: UUID
 
-    @MoodAnnotation @NotBlank
+    @NotBlank @Mood
     lateinit var mood: String
 
     @NotNull @JsonbDateFormat(value = "yyyy-MM-dd")
     lateinit var date: LocalDate
 
-    @NotBlank
+    @NotBlank @HexColor
     lateinit var color: String
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Users::class)

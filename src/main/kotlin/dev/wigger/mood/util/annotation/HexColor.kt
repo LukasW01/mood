@@ -10,5 +10,5 @@ import kotlin.reflect.KClass
 annotation class HexColor(
     val message: String = "Invalid color",
     val groups: Array<KClass<*>> = [],
-    val payload: Array<KClass<out Payload>> = []
+    val payload: Array<KClass<out Payload>> = [],
 )

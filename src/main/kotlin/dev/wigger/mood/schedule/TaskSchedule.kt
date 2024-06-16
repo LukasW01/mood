@@ -16,6 +16,11 @@ class TaskSchedule {
     @Scheduled(cron = "0 0 * * * ?")
     fun midnight(execution: ScheduledExecution) {
         userService.deleteUnverifiedAndOldUsers()
-        userService.updateResetTokenToNull()
+    }
+
+    @Transactional
+    @Scheduled(cron = "0 * * * * ?")
+    fun hourly(execution: ScheduledExecution) {
+        userService.updateTokenToNull()
     }
 }

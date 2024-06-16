@@ -14,7 +14,7 @@ import jakarta.ws.rs.core.Response
 @ApplicationScoped
 @Path("/") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
 class InfoController {
-    @GET 
+    @GET
     fun index(): Response = Response.status(418).entity(ErrorResponse("I'm a teapot", 418)).build()
     
     @GET @Path("/ip")

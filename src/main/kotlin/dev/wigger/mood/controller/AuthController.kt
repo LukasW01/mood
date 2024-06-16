@@ -9,6 +9,7 @@ import dev.wigger.mood.user.UserService
 import dev.wigger.mood.user.Users
 import dev.wigger.mood.util.Password
 import dev.wigger.mood.util.enums.Roles
+import dev.wigger.mood.util.mapper.WebApplicationMapperException
 
 import io.quarkiverse.bucket4j.runtime.RateLimited
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver
@@ -61,7 +62,7 @@ class AuthController {
     fun login(@Valid payload: LoginDto, context: RoutingContext): AuthResponseDto {
         val user = userService.findByMail(payload.mail)
         if (!hashService.isHashedArgon(payload.password, user.password)) {
-            throw WebApplicationException("Login failed", 403)
+            throw WebApplicationMapperException("Login failed", 403)
         }
 
         mailgun.sendMessage(user.mail, "Login", Templates.login(user, context.request().remoteAddress().host()).render())
@@ -78,7 +79,7 @@ class AuthController {
     fun register(@Valid payload: RegisterDto, context: RoutingContext) {
         userService.findByMailException(payload.mail)
         if (!Password.hasSufficientStrength(payload.password)) {
-            throw WebApplicationException("Password too weak", 400)
+            throw WebApplicationMapperException("Password too weak", 400)
         }
 
         val user = Users().apply {
@@ -101,7 +102,7 @@ class AuthController {
     fun update(@Valid payload: UpdateDto, ctx: SecurityContext) {
         val user = userService.findByMail(ctx.userPrincipal.name)
         if (!hashService.isHashedArgon(payload.oldPassword, user.password) || !Password.hasSufficientStrength(payload.newPassword)) {
-            throw WebApplicationException("Login failed", 401)
+            throw WebApplicationMapperException("Login failed", 401)
         }
 
         payload.mail?.let { userService.findByMailException(it) }
@@ -113,6 +114,7 @@ class AuthController {
                 firstName = payload.firstName ?: user.firstName
                 lastName = payload.lastName ?: user.lastName
                 password = hashService.hashArgon(payload.newPassword)
+                isVerified = user.isVerified
             },
         )
     }
@@ -123,7 +125,7 @@ class AuthController {
     fun delete(@Valid payload: DeleteDto) {
         val user = userService.findByMail(payload.mail)
         if (!hashService.isHashedArgon(payload.password, user.password)) {
-            throw WebApplicationException("Login failed", 403)
+            throw WebApplicationMapperException("Login failed", 403)
         }
         
         userService.deleteByMail(payload.mail)
@@ -167,14 +169,14 @@ class AuthController {
         return Templates.resetForm(user, context.request().remoteAddress().host()).render()
     }
     
-    @PUT @Path("/auth/password/reset/change/")
+    @PUT @Path("/auth/password/reset")
     @PermitAll
     @Transactional
     fun reset(@Valid payload: ResetDto) {
         val user = userService.findByResetToken(payload.token)
         
         if (payload.password != payload.passwordRepeat) {
-            throw WebApplicationException("Passwords do not match", 400)
+            throw WebApplicationMapperException("Passwords do not match", 400)
         }
         
         userService.updateOne(user.id, user.apply {
@@ -183,9 +185,9 @@ class AuthController {
         })
     }
     
-    @POST @Path("/auth/password/reset/token")
+    @GET @Path("/auth/password/reset/check/{token}")
     @PermitAll
-    fun token(@Valid payload: TokenUuiddto): Response = userService.findByResetToken(payload.token).let { Response.ok().build() }
+    fun checkToken(token: UUID): Response = userService.findByResetToken(token).let { Response.ok().build() }
     
     @GET @Path("/auth/refresh")
     @Authenticated

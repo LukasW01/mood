@@ -26,8 +26,9 @@ Authorization: Bearer {{auth_token}}
 {
   "firstName": "Lukas",
   "lastName": "Wigger",
-  "oldPassword": "Muri.2024#!",
-  "newPassword": "Muri.2025#!"
+  "oldPassword": "password",
+  "newPassword": "securePassword"
+
 }
 
 ### Delete User
@@ -40,6 +41,24 @@ Authorization: Bearer {{auth_token}}
   "password": "securePassword"
 }
 
+### Verify token
+GET http://localhost:8080/auth/refresh
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### Verify token
+GET http://localhost:8080/auth/verify/1
+
+### Password Reset (update)
+PUT http://localhost:8080/auth/password/reset
+Content-Type: application/json
+
+{
+  "password": "password",
+  "passwordRepeat": "securePassword",
+  "token": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+}
+
 ### Password Reset (request)
 POST http://localhost:8080/auth/password/reset
 Content-Type: application/json
@@ -47,3 +66,12 @@ Content-Type: application/json
 {
   "mail": "mail@example.com"
 }
+
+
+### Password Reset (check)
+GET http://localhost:8080/auth/password/reset/check/1
+Content-Type: application/json
+
+### Password Reset (confirm)
+GET http://localhost:8080/auth/password/reset/confirm/1
+Content-Type: application/json

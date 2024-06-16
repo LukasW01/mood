@@ -59,7 +59,7 @@ data class TokenDto @JsonbCreator constructor(
     val token: String,
 )
 
-data class TokenUuiddto @JsonbCreator constructor(
+data class TokenUuidDto @JsonbCreator constructor(
     val token: UUID,
 )
 
