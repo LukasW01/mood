@@ -3,9 +3,17 @@ POST http://localhost:8080/auth/login
 Content-Type: application/json
 
 {
-  "mail": "lukas@wigger.one",
-  "password": "Muri.2024#!"
+  "mail": "mail@example.com",
+  "password": "securePassword"
 }
+
+> {% client.global.set("auth_token", response.body.token) %}
+
+
+### Get all delegator of user
+GET http://localhost:8080/sharing/delegator
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 ### Get all delegator of user
 GET http://localhost:8080/sharing/token/create

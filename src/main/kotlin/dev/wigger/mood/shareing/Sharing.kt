@@ -1,5 +1,6 @@
 package dev.wigger.mood.shareing
 
+import dev.wigger.mood.entry.Entry
 import dev.wigger.mood.user.Users
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase
 import jakarta.persistence.*
@@ -21,6 +22,9 @@ class Sharing : PanacheEntityBase() {
 
     @UpdateTimestamp
     var updatedAt: ZonedDateTime? = null
+
+    @Transient
+    var entry: List<Entry>? = null
 
     @ManyToOne(fetch = FetchType.LAZY, targetEntity = Users::class)
     @OnDelete(action = OnDeleteAction.CASCADE)

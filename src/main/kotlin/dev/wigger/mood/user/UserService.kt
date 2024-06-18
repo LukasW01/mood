@@ -16,10 +16,6 @@ class UserService {
 
     fun updateOne(id: Long, users: Users) = userRepository.updateOne(id, users)
 
-    fun deleteUnverifiedAndOldUsers() = userRepository.deleteUnverifiedAndOldUsers()
-
-    fun updateTokenToNull() = userRepository.updateTokenToNull()
-
     fun findByMail(mail: String): Users = userRepository.findByMail(mail) ?: throw WebApplicationMapperException("User does not exist", 404)
     
     fun findByVerifyToken(token: UUID): Users = userRepository.findByVerifyToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
@@ -28,7 +24,5 @@ class UserService {
 
     fun findBySharingToken(token: UUID): Users = userRepository.findBySharingToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
     
-    fun findByMailException(mail: String): Users? = userRepository.findByMail(mail)?.let {
-        throw WebApplicationMapperException("User already exists", 422)
-    }
+    fun findByMailException(mail: String): Users? = userRepository.findByMail(mail)?.let { throw WebApplicationMapperException("User already exists", 422) }
 }

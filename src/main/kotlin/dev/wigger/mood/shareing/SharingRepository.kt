@@ -7,7 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped
 class SharingRepository : PanacheRepository<Sharing> {
     fun findByUserId(userId: Long): List<Sharing>? = find("user.id = ?1", userId).list()
     
-    fun findByUserIdAndDelegatorId(userId: Long, delegatorId: Long): Sharing? = find("user.id = ?1 and delegator.id = ?2", userId, delegatorId).firstResult()
+    fun findByUserIdAndDelegatorId(userId: Long, delegatorId: Long): List<Sharing>? = find("user.id = ?1 and delegator.id = ?2", userId, delegatorId).list()
 
     fun persistOne(sharing: Sharing) = persistAndFlush(sharing)
 }

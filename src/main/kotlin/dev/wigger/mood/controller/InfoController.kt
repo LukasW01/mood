@@ -1,7 +1,6 @@
 package dev.wigger.mood.controller
 
-import dev.wigger.mood.dto.ErrorResponse
-import dev.wigger.mood.dto.Ip
+import dev.wigger.mood.dto.*
 import io.vertx.ext.web.RoutingContext
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.ws.rs.Consumes

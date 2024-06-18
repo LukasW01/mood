@@ -1,6 +1,7 @@
 package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.*
+import dev.wigger.mood.entry.EntryService
 import dev.wigger.mood.shareing.Sharing
 import dev.wigger.mood.shareing.SharingService
 import dev.wigger.mood.user.UserService
@@ -35,12 +36,17 @@ class SharingController {
     @Inject
     private lateinit var userService: UserService
     
+    @Inject
+    private lateinit var entryService: EntryService
+    
     @GET @Path("/sharing/delegator")
     @RolesAllowed("USER")
     fun getDelegator(ctx: SecurityContext): List<SharingDelegatorDto> {
         val user = userService.findByMail(ctx.userPrincipal.name)
-        
-        return sharingService.findByUserId(user.id).map { sharing -> sharingService.mapToDto(sharing) }
+
+        return sharingService.findByUserId(user.id).map { sharing ->
+            sharing.apply { entry = entryService.findByUserIdEmpty(sharing.delegator.id) }.toDelegatorDto()
+        }
     }
 
     @GET @Path("/sharing/token/create")

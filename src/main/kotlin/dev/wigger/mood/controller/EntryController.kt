@@ -1,12 +1,9 @@
 package dev.wigger.mood.controller
 
-import dev.wigger.mood.dto.EntryDto
-import dev.wigger.mood.dto.EntrySaveDto
-import dev.wigger.mood.dto.EntryUpdateDto
+import dev.wigger.mood.dto.*
 import dev.wigger.mood.entry.Entry
 import dev.wigger.mood.entry.EntryService
 import dev.wigger.mood.user.UserService
-import dev.wigger.mood.util.mapper.WebApplicationMapperException
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -36,12 +33,12 @@ class EntryController {
     @GET @Path("/entry")
     @RolesAllowed("USER")
     fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByMail(ctx.userPrincipal.name)
-        .let { entryService.findByUserId(it.id) }
+        .let { entryService.findByUserId(it.id).toDtoList() }
     
     @GET @Path("/entry/{id}")
     @RolesAllowed("USER")
     fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByMail(ctx.userPrincipal.name)
-        .let { entryService.findByIdAndUserId(id, it.id) }
+        .let { entryService.findByIdAndUserId(id, it.id).toDto() }
 
     @DELETE @Path("/entry/{id}")
     @RolesAllowed("USER")
@@ -49,7 +46,6 @@ class EntryController {
     fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
         val entry = usersService.findByMail(ctx.userPrincipal.name)
             .let { entryService.findEntityByIdAndUserId(id, it.id) }
-            ?: throw WebApplicationMapperException("No Entry found", 400)
         
         entryService.deleteById(entry.id)
     }
@@ -64,7 +60,6 @@ class EntryController {
     ) {
         val entry = usersService.findByMail(ctx.userPrincipal.name)
             .let { entryService.findEntityByIdAndUserId(id, it.id) }
-            ?: throw WebApplicationMapperException("No Entry found", 404)
         
         entryService.updateOne(
             id,

@@ -1,6 +1,6 @@
 package dev.wigger.mood.schedule
 
-import dev.wigger.mood.user.UserService
+import dev.wigger.mood.user.UserRepository
 import io.quarkus.scheduler.Scheduled
 import io.quarkus.scheduler.ScheduledExecution
 import jakarta.enterprise.context.ApplicationScoped
@@ -10,17 +10,18 @@ import jakarta.transaction.Transactional
 @ApplicationScoped
 class TaskSchedule {
     @Inject
-    private lateinit var userService: UserService
+    private lateinit var userRepository: UserRepository
 
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")
     fun midnight(execution: ScheduledExecution) {
-        userService.deleteUnverifiedAndOldUsers()
+        userRepository.deleteUnverifiedAndOldUsers()
     }
 
     @Transactional
     @Scheduled(cron = "0 * * * * ?")
     fun hourly(execution: ScheduledExecution) {
-        userService.updateTokenToNull()
+        userRepository.updateResetTokenToNull()
+        userRepository.updateSharingTokenToNull()
     }
 }

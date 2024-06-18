@@ -21,7 +21,9 @@ class UserRepository : PanacheRepository<Users> {
     
     fun deleteUnverifiedAndOldUsers() = delete("isVerified = ?1 and dateJoined < ?2", false, LocalDateTime.now().minusDays(1))
 
-    fun updateTokenToNull(resetToken: UUID? = null, sharingToken: UUID? = null) = update("resetToken = ?1 and sharingToken = ?2", resetToken, sharingToken)
+    fun updateResetTokenToNull() = update("resetToken = ?1", null as UUID?)
+
+    fun updateSharingTokenToNull() = update("sharingToken = ?1", null as UUID?)
 
     fun findByLongId(id: Long): Users? = find("id = ?1", id).firstResult()
 
