@@ -59,10 +59,6 @@ data class TokenDto @JsonbCreator constructor(
     val token: String,
 )
 
-data class TokenUuidDto @JsonbCreator constructor(
-    val token: UUID,
-)
-
 fun Users.toDto(): UserDto = UserDto(
     id = id,
     mail = mail,

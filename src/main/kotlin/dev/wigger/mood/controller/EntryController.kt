@@ -32,20 +32,19 @@ class EntryController {
     
     @GET @Path("/entry")
     @RolesAllowed("USER")
-    fun get(ctx: SecurityContext): List<EntryDto>? = usersService.findByMail(ctx.userPrincipal.name)
-        .let { entryService.findByUserId(it.id).toDtoList() }
+    fun get(ctx: SecurityContext): List<EntryDto>? =
+        entryService.findByUserId(ctx.userPrincipal.name.toLong()).toDtoList()
     
     @GET @Path("/entry/{id}")
     @RolesAllowed("USER")
-    fun getById(id: UUID, ctx: SecurityContext): EntryDto = usersService.findByMail(ctx.userPrincipal.name)
-        .let { entryService.findByIdAndUserId(id, it.id).toDto() }
+    fun getById(id: UUID, ctx: SecurityContext): EntryDto =
+        entryService.findByIdAndUserId(id, ctx.userPrincipal.name.toLong()).toDto()
 
     @DELETE @Path("/entry/{id}")
     @RolesAllowed("USER")
     @Transactional
     fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
-        val entry = usersService.findByMail(ctx.userPrincipal.name)
-            .let { entryService.findEntityByIdAndUserId(id, it.id) }
+        val entry = entryService.findEntityByIdAndUserId(id, ctx.userPrincipal.name.toLong())
         
         entryService.deleteById(entry.id)
     }
@@ -58,8 +57,7 @@ class EntryController {
         @Valid payload: EntryUpdateDto,
         ctx: SecurityContext,
     ) {
-        val entry = usersService.findByMail(ctx.userPrincipal.name)
-            .let { entryService.findEntityByIdAndUserId(id, it.id) }
+        val entry = entryService.findEntityByIdAndUserId(id, ctx.userPrincipal.name.toLong())
         
         entryService.updateOne(
             id,
@@ -77,7 +75,7 @@ class EntryController {
     @RolesAllowed("USER")
     @Transactional
     fun save(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
-        val users = usersService.findByMail(ctx.userPrincipal.name)
+        val users = usersService.findByIdLong(ctx.userPrincipal.name.toLong())
 
         payload.forEach {
             entryService.persistOne(Entry().apply {

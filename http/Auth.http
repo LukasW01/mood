@@ -28,7 +28,6 @@ Authorization: Bearer {{auth_token}}
   "lastName": "Wigger",
   "oldPassword": "password",
   "newPassword": "securePassword"
-
 }
 
 ### Delete User
@@ -66,7 +65,6 @@ Content-Type: application/json
 {
   "mail": "mail@example.com"
 }
-
 
 ### Password Reset (check)
 GET http://localhost:8080/auth/password/reset/check/1

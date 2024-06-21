@@ -16,9 +16,8 @@ class TokenService {
      * @return jwt with claimed values. signed by the *.pem keys in resources folder.
      */
     fun createToken(users: Users, groups: Roles): String = Jwt.claims()
-        .subject(users.mail)
+        .subject(users.id.toString())
         .groups(groups.toString())
-        .claim("userId", users.id)
         .issuedAt(Instant.now())
         .expiresAt(Instant.now().plus(30L, ChronoUnit.DAYS))
         .sign()

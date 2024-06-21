@@ -100,7 +100,7 @@ class AuthController {
     @RolesAllowed("USER")
     @Transactional
     fun update(@Valid payload: UpdateDto, ctx: SecurityContext) {
-        val user = userService.findByMail(ctx.userPrincipal.name)
+        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
         if (!hashService.isHashedArgon(payload.oldPassword, user.password) || !Password.hasSufficientStrength(payload.newPassword)) {
             throw WebApplicationMapperException("Login failed", 401)
         }
@@ -108,13 +108,12 @@ class AuthController {
         payload.mail?.let { userService.findByMailException(it) }
         
         userService.updateOne(
-            user.id,
-            Users().apply {
+            ctx.userPrincipal.name.toLong(),
+            user.apply {
                 mail = payload.mail ?: user.mail
                 firstName = payload.firstName ?: user.firstName
                 lastName = payload.lastName ?: user.lastName
                 password = hashService.hashArgon(payload.newPassword)
-                isVerified = user.isVerified
             },
         )
     }
@@ -122,8 +121,8 @@ class AuthController {
     @DELETE @Path("/auth/delete")
     @RolesAllowed("USER")
     @Transactional
-    fun delete(@Valid payload: DeleteDto) {
-        val user = userService.findByMail(payload.mail)
+    fun delete(@Valid payload: DeleteDto, ctx: SecurityContext) {
+        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
         if (!hashService.isHashedArgon(payload.password, user.password)) {
             throw WebApplicationMapperException("Login failed", 403)
         }
@@ -163,7 +162,7 @@ class AuthController {
     @GET @Path("/auth/password/reset/confirm/{token}")
     @Produces(MediaType.TEXT_HTML) @Consumes(MediaType.TEXT_PLAIN)
     @PermitAll
-    fun reset(token: UUID, context: RoutingContext): String {
+    fun resetHtml(token: UUID, context: RoutingContext): String {
         val user = userService.findByResetToken(token)
 
         return Templates.resetForm(user, context.request().remoteAddress().host()).render()
@@ -176,7 +175,11 @@ class AuthController {
         val user = userService.findByResetToken(payload.token)
         
         if (payload.password != payload.passwordRepeat) {
-            throw WebApplicationMapperException("Passwords do not match", 400)
+            throw WebApplicationMapperException("Passwords do not match", 422)
+        }
+        
+        if (!Password.hasSufficientStrength(payload.password)) {
+            throw WebApplicationMapperException("Login failed", 403)
         }
         
         userService.updateOne(user.id, user.apply {
@@ -192,7 +195,7 @@ class AuthController {
     @GET @Path("/auth/refresh")
     @Authenticated
     fun refresh(ctx: SecurityContext): TokenDto {
-        val user = userService.findByMail(ctx.userPrincipal.name)
+        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
         
         return TokenDto(tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED))
     }

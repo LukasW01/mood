@@ -1,5 +1,6 @@
 package dev.wigger.mood.shareing
 
+import dev.wigger.mood.util.enums.Permissions
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
 
 import jakarta.enterprise.context.ApplicationScoped
@@ -12,9 +13,16 @@ class SharingService {
 
     fun persistOne(sharing: Sharing) = sharingRepository.persistOne(sharing)
 
-    fun findByUserId(userId: Long): List<Sharing> = sharingRepository.findByUserId(userId) ?: throw WebApplicationMapperException("No user found", 404)
+    fun updateOne(
+        userId: Long,
+        delegatorId: Long,
+        sharing: Sharing,
+    ) = sharingRepository.updateOne(userId, delegatorId, sharing)
     
-    fun findByUserIdAndDelegatorIdException(userId: Long, delegatorId: Long) = sharingRepository.findByUserIdAndDelegatorId(userId, delegatorId)?.let {
-        throw WebApplicationMapperException("Cannot connect a user twice", 422)
-    }
+    fun delete(userId: Long, delegatorId: Long) = sharingRepository.delete(userId, delegatorId)
+
+    fun findByUserId(userId: Long, permissions: Permissions): List<Sharing> = sharingRepository.findByUserId(userId)
+        ?: throw WebApplicationMapperException("No user found", 404)
+    
+    fun findByUserIdAndDelegatorId(userId: Long, delegatorId: Long): Sharing? = sharingRepository.findByUserIdAndDelegatorId(userId, delegatorId)
 }

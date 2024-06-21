@@ -27,6 +27,8 @@ data class EntryUpdateDto @JsonbCreator constructor(
     var color: String?,
 )
 
+fun List<Entry>.toDtoList(): List<EntryDto> = this.map { it.toDto() }
+
 fun Entry.toDto(): EntryDto = EntryDto(
     id = id,
     mood = mood,
@@ -34,5 +36,3 @@ fun Entry.toDto(): EntryDto = EntryDto(
     date = date,
     color = color,
 )
-
-fun List<Entry>.toDtoList(): List<EntryDto> = this.map { it.toDto() }

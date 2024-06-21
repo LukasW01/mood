@@ -26,5 +26,20 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "token": "13b4847e-d25c-4f50-a941-74ecf9289b55"
+  "token": "06e34456-98c6-45dd-b1df-859e21c3adfc",
+  "permissions": "ALL"
+}
+
+### Delete share
+DELETE http://localhost:8080/sharing/3
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+### Update share
+PUT http://localhost:8080/sharing/3
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "permissions": "JOURNAL_HISTORY"
 }

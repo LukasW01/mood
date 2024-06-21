@@ -1,4 +1,4 @@
-create sequence public.shareing_id_seq;
+create sequence public.sharing_id_seq;
 
-alter sequence public.shareing_id_seq owned by public.shareing.id;
+alter sequence public.sharing_id_seq owned by public.sharing.id;
 

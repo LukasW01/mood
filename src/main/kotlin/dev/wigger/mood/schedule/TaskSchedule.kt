@@ -19,8 +19,8 @@ class TaskSchedule {
     }
 
     @Transactional
-    @Scheduled(cron = "0 * * * * ?")
-    fun hourly(execution: ScheduledExecution) {
+    @Scheduled(cron = "0 0 * * * ?")
+    fun midnightToken(execution: ScheduledExecution) {
         userRepository.updateResetTokenToNull()
         userRepository.updateSharingTokenToNull()
     }

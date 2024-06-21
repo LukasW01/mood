@@ -18,6 +18,8 @@ class UserService {
 
     fun findByMail(mail: String): Users = userRepository.findByMail(mail) ?: throw WebApplicationMapperException("User does not exist", 404)
     
+    fun findByIdLong(id: Long): Users = userRepository.findByLongId(id) ?: throw WebApplicationMapperException("User does not exist", 404)
+    
     fun findByVerifyToken(token: UUID): Users = userRepository.findByVerifyToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
 
     fun findByResetToken(token: UUID): Users = userRepository.findByResetToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)

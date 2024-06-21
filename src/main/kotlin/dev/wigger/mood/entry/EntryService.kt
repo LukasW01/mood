@@ -1,5 +1,6 @@
 package dev.wigger.mood.entry
 
+import dev.wigger.mood.util.enums.Permissions
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -10,19 +11,28 @@ class EntryService {
     @Inject
     private lateinit var entryRepository: EntryRepository
 
-    fun findByUserId(userId: Long): List<Entry> = entryRepository.findByUserId(userId) ?: throw WebApplicationMapperException("No Entry found", 400)
-    
-    fun findByUserIdEmpty(userId: Long): List<Entry>? = entryRepository.findByUserId(userId)
-
-    fun findByIdAndUserId(id: UUID, userId: Long): Entry = entryRepository.findByIdAndUserId(id, userId)
-        ?: throw WebApplicationMapperException("No Entry found", 400)
-    
-    fun findEntityByIdAndUserId(id: UUID, userId: Long): Entry = entryRepository.findByIdAndUserId(id, userId)
-        ?: throw WebApplicationMapperException("No Entry found", 400)
-    
     fun updateOne(id: UUID, entry: Entry) = entryRepository.updateOne(id, entry)
 
     fun persistOne(entry: Entry) = entryRepository.persistOne(entry)
 
     fun deleteById(id: UUID) = entryRepository.delete(id)
+
+    fun findByUserId(userId: Long): List<Entry> = entryRepository.findByUserId(userId) ?: throw WebApplicationMapperException("No Entry found", 404)
+
+    fun findByIdAndUserId(id: UUID, userId: Long): Entry = entryRepository.findByIdAndUserId(id, userId)
+        ?: throw WebApplicationMapperException("No Entry found", 404)
+    
+    fun findEntityByIdAndUserId(id: UUID, userId: Long): Entry = entryRepository.findByIdAndUserId(id, userId)
+        ?: throw WebApplicationMapperException("No Entry found", 404)
+    
+    fun findByUserIdPermission(userId: Long, permissions: Permissions): List<Entry>? = when (permissions) {
+        Permissions.ALL ->
+            entryRepository.findByUserId(userId)
+        Permissions.NO_JOURNAL ->
+            entryRepository.findByUserId(userId)?.map { entry -> entry.apply { journal = null } }
+        Permissions.HISTORY_LIMITED ->
+            entryRepository.findByUserIdForLastSevenDays(userId)
+        Permissions.JOURNAL_HISTORY ->
+            entryRepository.findByUserIdForLastSevenDays(userId)?.map { entry -> entry.apply { journal = null } }
+    }
 }

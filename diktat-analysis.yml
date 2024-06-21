@@ -21,7 +21,7 @@
 - name: LONG_LINE
   enabled: true
   configuration:
-    lineLength: '165'
+    lineLength: '170'
 - name: TOO_MANY_PARAMETERS
   enabled: true
   configuration:

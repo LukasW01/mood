@@ -9,3 +9,4 @@ create table public.entry (
   match simple on update no action on delete cascade
 );
 
+create unique index entry_pkey on public.entry (id);
