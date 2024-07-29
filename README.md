@@ -1,6 +1,6 @@
 # mood
 
-A RESTful API for mood tracking.
+A RESTful API for mood tracking
 
 ![app](data/app.jpeg)
 
@@ -20,7 +20,7 @@ Build the application:
 gradle build
 ```
 
-Run the application (quarkus):
+Run the application:
 
 ```bash
 gradle quarkusDev
