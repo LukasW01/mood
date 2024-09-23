@@ -13,4 +13,4 @@ EXPOSE $PORT
 USER 1001
 
 ENTRYPOINT ["/bin/sh", "-c"]
-CMD ["/app/build/$PROJECT-$VERSION-runner"]
+CMD ["/app/build/mood-0.5-runner"]
