@@ -28,6 +28,17 @@ gradle:diktat:
   stage: gradle
   image: gradle:jdk21-alpine
   script: gradle diktatCheck
+  
+gradle:build:
+  stage: gradle
+  services:
+    - docker:dind
+  image: gradle:jdk21-alpine
+  script: ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true -x spotlessKotlin diktatCheck
+  artifacts:
+    untracked: true
+  only:
+    - tags
 
 docker_build:
   stage: docker
@@ -46,7 +57,6 @@ docker_build:
   image: docker:cli
   only:
     - tags
-
 
 qodana:
   stage: qodana
