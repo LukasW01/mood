@@ -33,7 +33,7 @@ gradle:build:
   stage: gradle
   services:
     - docker:dind
-  image: gradle:jdk21-alpine
+  image: docker:cli
   script: ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true -x spotlessKotlin diktatCheck
   artifacts:
     untracked: true
