@@ -27,10 +27,10 @@ class EntryService {
         ?: throw WebApplicationMapperException("No Entry found", 404)
 
     fun findByUserIdAndDateException(userId: Long, date: List<LocalDate>) {
-        if (entryRepository.findByUserIdAndDate(userId, date).isNullOrEmpty()) {
-            null
-        } else {
-            throw WebApplicationMapperException("An entry already exists on this day", 422)
+        entryRepository.findByUserIdAndDate(userId, date).let {
+            if (!it.isNullOrEmpty()) {
+                throw WebApplicationMapperException("An entry already exists on this day", 422)
+            }
         }
     }
     

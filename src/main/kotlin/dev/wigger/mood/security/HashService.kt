@@ -1,6 +1,6 @@
 package dev.wigger.mood.security
 
-import de.mkammerer.argon2.Argon2Factory
+import io.quarkus.elytron.security.common.BcryptUtil
 import jakarta.enterprise.context.ApplicationScoped
 
 /**
@@ -13,8 +13,7 @@ class HashService {
      * @param password the string to be hashed
      * @return the hashed string
      */
-    fun hashArgon(password: String): String = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 64).hash(22, 65_536, 1,
-        password.toCharArray())
+    fun hash(password: String): String = BcryptUtil.bcryptHash(password)
 
     /**
      * checks whether the string matches the hash
@@ -22,6 +21,5 @@ class HashService {
      * @param hash the hashed string
      * @return true if hash(input) == hash, otherwise false
      */
-    fun isHashedArgon(password: String, hash: String): Boolean = Argon2Factory.create(Argon2Factory.Argon2Types.ARGON2id, 32, 64)
-        .verify(hash, password.toCharArray())
+    fun isHashedCrypt(password: String, hash: String): Boolean = BcryptUtil.matches(password, hash)
 }

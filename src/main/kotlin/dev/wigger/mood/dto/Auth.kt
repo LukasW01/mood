@@ -4,10 +4,6 @@ import dev.wigger.mood.user.Users
 import jakarta.json.bind.annotation.JsonbCreator
 import java.util.UUID
 
-/**
- * This file contains all incoming DTOs.
- * Here, [LoginDto] is a data class containing immutable class members
- */
 data class LoginDto @JsonbCreator constructor(
     val mail: String,
     val password: String,

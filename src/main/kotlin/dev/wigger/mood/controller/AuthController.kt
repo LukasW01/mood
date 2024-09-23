@@ -7,7 +7,6 @@ import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.templates.Templates
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.user.Users
-import dev.wigger.mood.util.Password
 import dev.wigger.mood.util.enums.Roles
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
 
@@ -61,7 +60,7 @@ class AuthController {
     @Transactional
     fun login(@Valid payload: LoginDto, context: RoutingContext): AuthResponseDto {
         val user = userService.findByMail(payload.mail)
-        if (!hashService.isHashedArgon(payload.password, user.password)) {
+        if (!hashService.isHashedCrypt(payload.password, user.password)) {
             throw WebApplicationMapperException("Login failed", 403)
         }
 
@@ -78,15 +77,12 @@ class AuthController {
     @Transactional
     fun register(@Valid payload: RegisterDto, context: RoutingContext) {
         userService.findByMailException(payload.mail)
-        if (!Password.hasSufficientStrength(payload.password)) {
-            throw WebApplicationMapperException("Password too weak", 400)
-        }
 
         val user = Users().apply {
             mail = payload.mail
             firstName = payload.firstName
             lastName = payload.lastName
-            password = hashService.hashArgon(payload.password)
+            password = hashService.hash(payload.password)
             verifyToken = UUID.randomUUID()
             isVerified = false
         }
@@ -101,7 +97,7 @@ class AuthController {
     @Transactional
     fun update(@Valid payload: UpdateDto, ctx: SecurityContext) {
         val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
-        if (!hashService.isHashedArgon(payload.oldPassword, user.password) || !Password.hasSufficientStrength(payload.newPassword)) {
+        if (!hashService.isHashedCrypt(payload.oldPassword, user.password)) {
             throw WebApplicationMapperException("Login failed", 401)
         }
 
@@ -113,7 +109,7 @@ class AuthController {
                 mail = payload.mail ?: user.mail
                 firstName = payload.firstName ?: user.firstName
                 lastName = payload.lastName ?: user.lastName
-                password = hashService.hashArgon(payload.newPassword)
+                password = hashService.hash(payload.newPassword)
             },
         )
     }
@@ -123,7 +119,7 @@ class AuthController {
     @Transactional
     fun delete(@Valid payload: DeleteDto, ctx: SecurityContext) {
         val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
-        if (!hashService.isHashedArgon(payload.password, user.password)) {
+        if (!hashService.isHashedCrypt(payload.password, user.password)) {
             throw WebApplicationMapperException("Login failed", 403)
         }
         
@@ -154,7 +150,6 @@ class AuthController {
         val token = UUID.randomUUID()
         
         userService.updateOne(user.id, user.apply { resetToken = token })
-
         mailgun.sendMessage(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(),
             "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
     }
@@ -178,12 +173,8 @@ class AuthController {
             throw WebApplicationMapperException("Passwords do not match", 422)
         }
         
-        if (!Password.hasSufficientStrength(payload.password)) {
-            throw WebApplicationMapperException("Login failed", 403)
-        }
-        
         userService.updateOne(user.id, user.apply {
-            password = hashService.hashArgon(payload.password)
+            password = hashService.hash(payload.password)
             resetToken = null
         })
     }

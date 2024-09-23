@@ -1,6 +1,3 @@
-services:
-  - postgres:latest
-
 stages:
   - gradle
   - qodana
@@ -8,23 +5,20 @@ stages:
 
 default:
   before_script: export GRADLE_USER_HOME="$(pwd)/.gradle"
-
-variables:
-  POSTGRES_DB: $DB
-  POSTGRES_USER: $DB_USER
-  POSTGRES_PASSWORD: $DB_PW
-  REGISTRY: ghcr.io
-
-gradle:test:
-  stage: gradle
-  image: gradle:jdk21-alpine
-  script: gradle test
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: push
     paths:
       - build
       - .gradle
+
+variables:
+  REGISTRY: ghcr.io
+
+gradle:test:
+  stage: gradle
+  image: gradle:jdk21-alpine
+  script: gradle test 
   artifacts:
     when: always
     reports:
@@ -34,32 +28,6 @@ gradle:diktat:
   stage: gradle
   image: gradle:jdk21-alpine
   script: gradle diktatCheck
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
-    paths:
-      - build
-      - .gradle
-
-qodana:
-  stage: qodana
-  image:
-    name: jetbrains/qodana-jvm-community:latest
-    entrypoint: [""]
-  variables:
-    QODANA_TOKEN: $qodana_token
-  script: qodana scan
-  artifacts:
-    paths:
-      - qodana/
-  cache:
-    key: "$CI_COMMIT_REF_NAME"
-    policy: push
-    paths:
-      - build
-      - .gradle
-  only:
-    - schedules
 
 docker_build:
   stage: docker
@@ -78,4 +46,19 @@ docker_build:
   image: docker:cli
   only:
     - tags
+
+
+qodana:
+  stage: qodana
+  image:
+    name: jetbrains/qodana-jvm-community:latest
+    entrypoint: [""]
+  variables:
+    QODANA_TOKEN: $qodana_token
+  script: qodana scan
+  artifacts:
+    paths:
+      - qodana/
+  only:
+    - schedules
 

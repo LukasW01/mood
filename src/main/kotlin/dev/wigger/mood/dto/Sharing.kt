@@ -35,6 +35,8 @@ data class SharingSubmittDto @JsonbCreator constructor(
     val permissions: Permissions,
 )
 
+fun List<Sharing>.toDtoList(): List<SharingDto> = this.map { it.toDto() }
+
 fun Sharing.toDto(): SharingDto = SharingDto(
     createdAt = createdAt,
     updatedAt = updatedAt,
@@ -42,8 +44,6 @@ fun Sharing.toDto(): SharingDto = SharingDto(
     delegator = delegator.toDto(),
     permissions = permissions,
 )
-
-fun List<Sharing>.toDtoList(): List<SharingDto> = this.map { it.toDto() }
 
 fun Sharing.toDelegatorDto(): SharingDelegatorDto = SharingDelegatorDto(
     createdAt = createdAt,
