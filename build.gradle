@@ -6,6 +6,9 @@ plugins {
     id "com.diffplug.spotless" version "6.25.0"
 }
 
+group 'dev.wigger.mood'
+version '0.5'
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -39,9 +42,6 @@ dependencies {
     testImplementation 'io.rest-assured:rest-assured'
     testImplementation 'org.mockito:mockito-core:5.13.0'
 }
-
-group 'dev.wigger.mood'
-version '0.5'
 
 allOpen {
     annotation("jakarta.ws.rs.Path")
