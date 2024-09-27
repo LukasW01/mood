@@ -5,7 +5,6 @@ import dev.wigger.mood.entry.EntryService
 import dev.wigger.mood.shareing.Sharing
 import dev.wigger.mood.shareing.SharingService
 import dev.wigger.mood.user.UserService
-import dev.wigger.mood.util.enums.Permissions
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.ApplicationScoped
@@ -44,7 +43,7 @@ class SharingController {
     
     @GET @Path("/sharing/delegator")
     @RolesAllowed("USER")
-    fun getDelegator(ctx: SecurityContext): List<SharingDelegatorDto> = sharingService.findByUserId(ctx.userPrincipal.name.toLong(), Permissions.ALL).map { sharing ->
+    fun getDelegator(ctx: SecurityContext): List<SharingDelegatorDto> = sharingService.findByUserId(ctx.userPrincipal.name.toLong()).map { sharing ->
         sharing.apply {
             entry = entryService.findByUserIdPermission(sharing.delegator.id, sharing.permissions)
         }.toDelegatorDto()

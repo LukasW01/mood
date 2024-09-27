@@ -1,6 +1,5 @@
 package dev.wigger.mood.shareing
 
-import dev.wigger.mood.util.enums.Permissions
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
 
 import jakarta.enterprise.context.ApplicationScoped
@@ -21,7 +20,7 @@ class SharingService {
     
     fun delete(userId: Long, delegatorId: Long) = sharingRepository.delete(userId, delegatorId)
 
-    fun findByUserId(userId: Long, permissions: Permissions): List<Sharing> = sharingRepository.findByUserId(userId)
+    fun findByUserId(userId: Long): List<Sharing> = sharingRepository.findByUserId(userId)
         ?: throw WebApplicationMapperException("No user found", 404)
     
     fun findByUserIdAndDelegatorId(userId: Long, delegatorId: Long): Sharing? = sharingRepository.findByUserIdAndDelegatorId(userId, delegatorId)

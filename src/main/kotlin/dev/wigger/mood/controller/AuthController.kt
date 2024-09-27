@@ -137,7 +137,6 @@ class AuthController {
     @Transactional
     fun register(token: UUID, context: RoutingContext): String {
         val user = userService.findByVerifyToken(token)
-        
         if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
             userService.updateOne(user.id, user.apply { isVerified = true })
         }
