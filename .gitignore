@@ -41,7 +41,7 @@ nb-configuration.xml
 
 # JWT signing key
 *.pem
-src/main/resources/jwt/
+jwt/
 
 # Kotlin
 .kotlin/
