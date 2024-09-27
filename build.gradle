@@ -6,8 +6,10 @@ plugins {
     id "com.diffplug.spotless" version "6.25.0"
 }
 
+
 group 'dev.wigger.mood'
 version '0.5'
+
 
 repositories {
     mavenCentral()
