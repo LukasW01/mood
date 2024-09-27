@@ -1,7 +1,6 @@
 package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.*
-import dev.wigger.mood.mail.Mailgun
 import dev.wigger.mood.security.HashService
 import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.templates.Templates
@@ -52,9 +51,6 @@ class AuthController {
     @Inject
     private lateinit var userService: UserService
     
-    @Inject
-    private lateinit var mailgun: Mailgun
-
     @POST @Path("/auth/login")
     @PermitAll
     @Transactional
@@ -64,7 +60,12 @@ class AuthController {
             throw WebApplicationMapperException("Login failed", 403)
         }
 
-        mailgun.sendMessage(user.mail, "Login", Templates.login(user, context.request().remoteAddress().host()).render())
+        Templates.login(user, context.request().remoteAddress().host())
+            .to(user.mail)
+            .subject("Login")
+            .send()
+            .await()
+            .indefinitely()
 
         return AuthResponseDto(
             token = tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED),
@@ -88,8 +89,12 @@ class AuthController {
         }
 
         userService.persistOne(user)
-        mailgun.sendMessage(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(),
-            "https://${context.request().authority()}/auth/verify/${user.verifyToken}").render())
+        Templates.register(payload, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/verify/${user.verifyToken}")
+            .to(payload.mail)
+            .subject("Register")
+            .send()
+            .await()
+            .indefinitely()
     }
 
     @PUT @Path("/auth/update")
@@ -135,8 +140,6 @@ class AuthController {
         
         if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
             userService.updateOne(user.id, user.apply { isVerified = true })
-
-            mailgun.sendMessage(user.mail, "Account verified!", Templates.verify(user, context.request().remoteAddress().host()).render())
         }
 
         return Templates.verify(user, context.request().remoteAddress().host()).render()
@@ -150,8 +153,12 @@ class AuthController {
         val token = UUID.randomUUID()
         
         userService.updateOne(user.id, user.apply { resetToken = token })
-        mailgun.sendMessage(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(),
-            "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
+        Templates.reset(user, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/password/reset/confirm/$token")
+            .to(user.mail)
+            .subject("Password reset")
+            .send()
+            .await()
+            .indefinitely()
     }
     
     @GET @Path("/auth/password/reset/confirm/{token}")

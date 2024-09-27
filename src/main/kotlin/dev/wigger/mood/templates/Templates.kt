@@ -2,6 +2,7 @@ package dev.wigger.mood.templates
 
 import dev.wigger.mood.dto.*
 import dev.wigger.mood.user.Users
+import io.quarkus.mailer.MailTemplate
 import io.quarkus.qute.CheckedTemplate
 import io.quarkus.qute.TemplateInstance
 import java.time.LocalDateTime
@@ -13,7 +14,7 @@ object Templates {
         user: Users,
         ip: String,
         year: Int = LocalDateTime.now().year,
-    ): TemplateInstance
+    ): MailTemplate.MailTemplateInstance
 
     @JvmStatic
     external fun register(
@@ -21,7 +22,7 @@ object Templates {
         ip: String,
         link: String,
         year: Int = LocalDateTime.now().year,
-    ): TemplateInstance
+    ): MailTemplate.MailTemplateInstance
 
     @JvmStatic
     external fun verify(
@@ -37,7 +38,7 @@ object Templates {
         ip: String,
         link: String,
         year: Int = LocalDateTime.now().year,
-    ): TemplateInstance
+    ): MailTemplate.MailTemplateInstance
 
     @JvmStatic
     external fun resetForm(
