@@ -76,7 +76,7 @@ class EntryController {
     @RolesAllowed("USER")
     @Transactional
     fun persist(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
-        val users = usersService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
+        val users = usersService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
 
         payload.groupingBy { it.date }
             .eachCount()

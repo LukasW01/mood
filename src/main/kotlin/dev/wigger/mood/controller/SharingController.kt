@@ -53,7 +53,7 @@ class SharingController {
     @RolesAllowed("USER")
     @Transactional
     fun createToken(ctx: SecurityContext): SharingTokenDto {
-        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
+        val user = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
         val token = UUID.randomUUID()
         
         userService.updateOne(
@@ -68,7 +68,7 @@ class SharingController {
     @RolesAllowed("USER")
     @Transactional
     fun connectToken(@Valid payload: SharingSubmittDto, ctx: SecurityContext) {
-        val users = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
+        val users = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
         val delegators = userService.findBySharingToken(payload.token)
 
         if (users.id == delegators.id) {
