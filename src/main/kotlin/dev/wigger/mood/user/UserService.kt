@@ -14,11 +14,11 @@ class UserService {
 
     fun deleteByMail(mail: String) = userRepository.deleteByMail(mail)
 
-    fun updateOne(id: Long, users: Users) = userRepository.updateOne(id, users)
+    fun updateOne(id: UUID, users: Users) = userRepository.updateOne(id, users)
 
     fun findByMail(mail: String): Users = userRepository.findByMail(mail) ?: throw WebApplicationMapperException("User does not exist", 404)
     
-    fun findByIdLong(id: Long): Users = userRepository.findByLongId(id) ?: throw WebApplicationMapperException("User does not exist", 404)
+    fun findByIdUUID(id: UUID): Users = userRepository.findByUUID(id) ?: throw WebApplicationMapperException("User does not exist", 404)
     
     fun findByVerifyToken(token: UUID): Users = userRepository.findByVerifyToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
 

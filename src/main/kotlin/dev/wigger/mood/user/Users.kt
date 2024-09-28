@@ -24,8 +24,8 @@ class Users : PanacheEntityBase() {
     var isVerified: Boolean = false
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long = 0
+    @GeneratedValue(strategy = GenerationType.UUID)
+    lateinit var id: UUID
     var resetToken: UUID? = null
     var sharingToken: UUID? = null
 

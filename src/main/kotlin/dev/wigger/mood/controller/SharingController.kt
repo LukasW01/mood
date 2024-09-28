@@ -43,7 +43,7 @@ class SharingController {
     
     @GET @Path("/sharing/delegator")
     @RolesAllowed("USER")
-    fun getDelegator(ctx: SecurityContext): List<SharingDelegatorDto> = sharingService.findByUserId(ctx.userPrincipal.name.toLong()).map { sharing ->
+    fun delegator(ctx: SecurityContext): List<SharingDelegatorDto> = sharingService.findByUserId(UUID.fromString(ctx.userPrincipal.name)).map { sharing ->
         sharing.apply {
             entry = entryService.findByUserIdPermission(sharing.delegator.id, sharing.permissions)
         }.toDelegatorDto()
@@ -53,7 +53,7 @@ class SharingController {
     @RolesAllowed("USER")
     @Transactional
     fun createToken(ctx: SecurityContext): SharingTokenDto {
-        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
+        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
         val token = UUID.randomUUID()
         
         userService.updateOne(
@@ -68,7 +68,7 @@ class SharingController {
     @RolesAllowed("USER")
     @Transactional
     fun connectToken(@Valid payload: SharingSubmittDto, ctx: SecurityContext) {
-        val users = userService.findByIdLong(ctx.userPrincipal.name.toLong())
+        val users = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
         val delegators = userService.findBySharingToken(payload.token)
 
         if (users.id == delegators.id) {
@@ -89,11 +89,11 @@ class SharingController {
     @DELETE @Path("/sharing/{id}")
     @RolesAllowed("USER")
     @Transactional
-    fun delete(id: Long, ctx: SecurityContext) {
-        sharingService.findByUserIdAndDelegatorId(ctx.userPrincipal.name.toLong(), id)
+    fun delete(id: UUID, ctx: SecurityContext) {
+        sharingService.findByUserIdAndDelegatorId(UUID.fromString(ctx.userPrincipal.name), id)
             ?: throw WebApplicationMapperException("User and delegator do not share anything at the moment", 422)
         
-        sharingService.delete(ctx.userPrincipal.name.toLong(), id)
+        sharingService.delete(UUID.fromString(ctx.userPrincipal.name), id)
     }
     
     @PUT @Path("/sharing/{id}")
@@ -101,14 +101,14 @@ class SharingController {
     @Transactional
     fun update(
         @Valid payload: SharingUpdateDto,
-        id: Long,
+        id: UUID,
         ctx: SecurityContext,
     ) {
-        val sharing = sharingService.findByUserIdAndDelegatorId(ctx.userPrincipal.name.toLong(), id)
+        val sharing = sharingService.findByUserIdAndDelegatorId(UUID.fromString(ctx.userPrincipal.name), id)
             ?: throw WebApplicationMapperException("User and delegator do not share anything at the moment", 422)
 
         sharingService.updateOne(
-            ctx.userPrincipal.name.toLong(),
+            UUID.fromString(ctx.userPrincipal.name),
             id,
             sharing.apply {
                 permissions = payload.permissions

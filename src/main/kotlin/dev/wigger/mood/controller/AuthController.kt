@@ -1,6 +1,7 @@
 package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.*
+import dev.wigger.mood.mail.Mailer
 import dev.wigger.mood.security.HashService
 import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.templates.Templates
@@ -51,6 +52,9 @@ class AuthController {
     @Inject
     private lateinit var userService: UserService
     
+    @Inject
+    private lateinit var mailer: Mailer
+    
     @POST @Path("/auth/login")
     @PermitAll
     @Transactional
@@ -60,12 +64,8 @@ class AuthController {
             throw WebApplicationMapperException("Login failed", 403)
         }
 
-        Templates.login(user, context.request().remoteAddress().host())
-            .to(user.mail)
-            .subject("Login")
-            .send()
-            .await()
-            .indefinitely()
+        mailer.send(user.mail, "Login", Templates.login(user, context.request().remoteAddress().host()).render())
+            .await().indefinitely()
 
         return AuthResponseDto(
             token = tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED),
@@ -89,19 +89,15 @@ class AuthController {
         }
 
         userService.persistOne(user)
-        Templates.register(payload, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/verify/${user.verifyToken}")
-            .to(payload.mail)
-            .subject("Register")
-            .send()
-            .await()
-            .indefinitely()
+        mailer.send(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/verify/${user.verifyToken}").render())
+            .await().indefinitely()
     }
 
     @PUT @Path("/auth/update")
     @RolesAllowed("USER")
     @Transactional
     fun update(@Valid payload: UpdateDto, ctx: SecurityContext) {
-        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
+        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
         if (!hashService.isHashedCrypt(payload.oldPassword, user.password)) {
             throw WebApplicationMapperException("Login failed", 401)
         }
@@ -109,7 +105,7 @@ class AuthController {
         payload.mail?.let { userService.findByMailException(it) }
         
         userService.updateOne(
-            ctx.userPrincipal.name.toLong(),
+            UUID.fromString(ctx.userPrincipal.name),
             user.apply {
                 mail = payload.mail ?: user.mail
                 firstName = payload.firstName ?: user.firstName
@@ -123,7 +119,7 @@ class AuthController {
     @RolesAllowed("USER")
     @Transactional
     fun delete(@Valid payload: DeleteDto, ctx: SecurityContext) {
-        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
+        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
         if (!hashService.isHashedCrypt(payload.password, user.password)) {
             throw WebApplicationMapperException("Login failed", 403)
         }
@@ -135,7 +131,7 @@ class AuthController {
     @Produces(MediaType.TEXT_HTML) @Consumes(MediaType.TEXT_PLAIN)
     @PermitAll
     @Transactional
-    fun register(token: UUID, context: RoutingContext): String {
+    fun verify(token: UUID, context: RoutingContext): String {
         val user = userService.findByVerifyToken(token)
         if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
             userService.updateOne(user.id, user.apply { isVerified = true })
@@ -152,12 +148,8 @@ class AuthController {
         val token = UUID.randomUUID()
         
         userService.updateOne(user.id, user.apply { resetToken = token })
-        Templates.reset(user, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/password/reset/confirm/$token")
-            .to(user.mail)
-            .subject("Password reset")
-            .send()
-            .await()
-            .indefinitely()
+        mailer.send(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
+            .await().indefinitely()
     }
     
     @GET @Path("/auth/password/reset/confirm/{token}")
@@ -192,7 +184,7 @@ class AuthController {
     @GET @Path("/auth/refresh")
     @Authenticated
     fun refresh(ctx: SecurityContext): TokenDto {
-        val user = userService.findByIdLong(ctx.userPrincipal.name.toLong())
+        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
         
         return TokenDto(tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED))
     }

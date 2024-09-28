@@ -26,17 +26,17 @@ Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "token": "06e34456-98c6-45dd-b1df-859e21c3adfc",
+  "token": "99edbd32-d792-4683-8ba5-3b9d66bce1cd",
   "permissions": "ALL"
 }
 
 ### Delete share
-DELETE http://localhost:8080/sharing/3
+DELETE http://localhost:8080/sharing/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Update share
-PUT http://localhost:8080/sharing/3
+PUT http://localhost:8080/sharing/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 

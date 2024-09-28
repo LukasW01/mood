@@ -6,7 +6,7 @@ import java.time.LocalDate
 import java.util.UUID
 
 data class EntryDto @JsonbCreator constructor(
-    var id: UUID,
+    var id: Long,
     var mood: String,
     var journal: String?,
     val date: LocalDate,

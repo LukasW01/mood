@@ -12,21 +12,21 @@ class EntryService {
     @Inject
     private lateinit var entryRepository: EntryRepository
 
-    fun updateOne(id: UUID, entry: Entry) = entryRepository.updateOne(id, entry)
+    fun updateOne(id: Long, entry: Entry) = entryRepository.updateOne(id, entry)
 
     fun persistOne(entry: Entry) = entryRepository.persistOne(entry)
 
-    fun deleteById(id: UUID) = entryRepository.delete(id)
+    fun deleteById(id: Long) = entryRepository.delete(id)
 
-    fun findByUserId(userId: Long): List<Entry> = entryRepository.findByUserId(userId) ?: throw WebApplicationMapperException("No Entry found", 404)
+    fun findByUserId(userId: UUID): List<Entry> = entryRepository.findByUserId(userId) ?: throw WebApplicationMapperException("No Entry found", 404)
 
-    fun findByIdAndUserId(id: UUID, userId: Long): Entry = entryRepository.findByIdAndUserId(id, userId)
+    fun findByIdAndUserId(id: Long, userId: UUID): Entry = entryRepository.findByIdAndUserId(id, userId)
         ?: throw WebApplicationMapperException("No Entry found", 404)
     
-    fun findEntityByIdAndUserId(id: UUID, userId: Long): Entry = entryRepository.findByIdAndUserId(id, userId)
+    fun findEntityByIdAndUserId(id: Long, userId: UUID): Entry = entryRepository.findByIdAndUserId(id, userId)
         ?: throw WebApplicationMapperException("No Entry found", 404)
 
-    fun findByUserIdAndDateException(userId: Long, date: List<LocalDate>) {
+    fun findByUserIdAndDateException(userId: UUID, date: List<LocalDate>) {
         entryRepository.findByUserIdAndDate(userId, date).let {
             if (!it.isNullOrEmpty()) {
                 throw WebApplicationMapperException("An entry already exists on this day", 422)
@@ -34,7 +34,7 @@ class EntryService {
         }
     }
     
-    fun findByUserIdPermission(userId: Long, permissions: Permissions): List<Entry>? = when (permissions) {
+    fun findByUserIdPermission(userId: UUID, permissions: Permissions): List<Entry>? = when (permissions) {
         Permissions.ALL ->
             entryRepository.findByUserId(userId)
         Permissions.NO_JOURNAL ->

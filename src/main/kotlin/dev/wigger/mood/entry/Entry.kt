@@ -21,8 +21,8 @@ class Entry : PanacheEntityBase() {
     var journal: String? = null
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    lateinit var id: UUID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long = 0
 
     @NotBlank @Mood
     lateinit var mood: String

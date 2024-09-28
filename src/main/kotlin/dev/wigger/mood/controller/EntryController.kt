@@ -34,18 +34,18 @@ class EntryController {
     @GET @Path("/entry")
     @RolesAllowed("USER")
     fun get(ctx: SecurityContext): List<EntryDto>? =
-        entryService.findByUserId(ctx.userPrincipal.name.toLong()).toDtoList()
+        entryService.findByUserId(UUID.fromString(ctx.userPrincipal.name)).toDtoList()
     
     @GET @Path("/entry/{id}")
     @RolesAllowed("USER")
-    fun getById(id: UUID, ctx: SecurityContext): EntryDto =
-        entryService.findByIdAndUserId(id, ctx.userPrincipal.name.toLong()).toDto()
+    fun getById(id: Long, ctx: SecurityContext): EntryDto =
+        entryService.findByIdAndUserId(id, UUID.fromString(ctx.userPrincipal.name)).toDto()
 
     @DELETE @Path("/entry/{id}")
     @RolesAllowed("USER")
     @Transactional
-    fun delete(@PathParam("id") id: UUID, ctx: SecurityContext) {
-        val entry = entryService.findEntityByIdAndUserId(id, ctx.userPrincipal.name.toLong())
+    fun delete(@PathParam("id") id: Long, ctx: SecurityContext) {
+        val entry = entryService.findEntityByIdAndUserId(id, UUID.fromString(ctx.userPrincipal.name))
         
         entryService.deleteById(entry.id)
     }
@@ -54,11 +54,11 @@ class EntryController {
     @RolesAllowed("USER")
     @Transactional
     fun update(
-        @PathParam("id") id: UUID,
+        @PathParam("id") id: Long,
         @Valid payload: EntryUpdateDto,
         ctx: SecurityContext,
     ) {
-        val entry = entryService.findEntityByIdAndUserId(id, ctx.userPrincipal.name.toLong())
+        val entry = entryService.findEntityByIdAndUserId(id, UUID.fromString(ctx.userPrincipal.name))
         
         entryService.updateOne(
             id,
@@ -76,7 +76,7 @@ class EntryController {
     @RolesAllowed("USER")
     @Transactional
     fun persist(@Valid payload: List<EntrySaveDto>, ctx: SecurityContext) {
-        val users = usersService.findByIdLong(ctx.userPrincipal.name.toLong())
+        val users = usersService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
 
         payload.groupingBy { it.date }
             .eachCount()
@@ -88,7 +88,7 @@ class EntryController {
                 }
             }
         
-        entryService.findByUserIdAndDateException(ctx.userPrincipal.name.toLong(), payload.map { it.date })
+        entryService.findByUserIdAndDateException(UUID.fromString(ctx.userPrincipal.name), payload.map { it.date })
         
         payload.forEach {
             entryService.persistOne(Entry().apply {

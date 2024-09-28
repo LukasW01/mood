@@ -25,10 +25,10 @@ class UserRepository : PanacheRepository<Users> {
 
     fun findBySharingToken(token: UUID): Users? = find("sharingToken = ?1", token).firstResult()
 
-    fun findByLongId(id: Long): Users? = find("id = ?1", id).firstResult()
+    fun findByUUID(id: UUID): Users? = find("id = ?1", id).firstResult()
 
-    fun updateOne(id: Long, users: Users) {
-        findByLongId(id)?.apply {
+    fun updateOne(id: UUID, users: Users) {
+        findByUUID(id)?.apply {
             mail = users.mail
             lastName = users.lastName
             firstName = users.firstName
