@@ -22,12 +22,12 @@ class Users : PanacheEntityBase() {
     
     @NotNull
     var isVerified: Boolean = false
+    var resetToken: UUID? = null
+    var sharingToken: UUID? = null
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     lateinit var id: UUID
-    var resetToken: UUID? = null
-    var sharingToken: UUID? = null
 
     @NotBlank @Email
     lateinit var mail: String

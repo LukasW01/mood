@@ -89,7 +89,8 @@ class AuthController {
         }
 
         userService.persistOne(user)
-        mailer.send(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/verify/${user.verifyToken}").render())
+        mailer.send(payload.mail, "Register", Templates.register(payload, context.request().remoteAddress().host(),
+            "https://${context.request().authority()}/auth/verify/${user.verifyToken}").render())
             .await().indefinitely()
     }
 
@@ -97,7 +98,7 @@ class AuthController {
     @RolesAllowed("USER")
     @Transactional
     fun update(@Valid payload: UpdateDto, ctx: SecurityContext) {
-        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
+        val user = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
         if (!hashService.isHashedCrypt(payload.oldPassword, user.password)) {
             throw WebApplicationMapperException("Login failed", 401)
         }
@@ -119,7 +120,7 @@ class AuthController {
     @RolesAllowed("USER")
     @Transactional
     fun delete(@Valid payload: DeleteDto, ctx: SecurityContext) {
-        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
+        val user = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
         if (!hashService.isHashedCrypt(payload.password, user.password)) {
             throw WebApplicationMapperException("Login failed", 403)
         }
@@ -148,7 +149,8 @@ class AuthController {
         val token = UUID.randomUUID()
         
         userService.updateOne(user.id, user.apply { resetToken = token })
-        mailer.send(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(), "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
+        mailer.send(user.mail, "Password reset", Templates.reset(user, context.request().remoteAddress().host(),
+            "https://${context.request().authority()}/auth/password/reset/confirm/$token").render())
             .await().indefinitely()
     }
     
@@ -184,7 +186,7 @@ class AuthController {
     @GET @Path("/auth/refresh")
     @Authenticated
     fun refresh(ctx: SecurityContext): TokenDto {
-        val user = userService.findByIdUUID(UUID.fromString(ctx.userPrincipal.name))
+        val user = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
         
         return TokenDto(tokenService.createToken(user, if (user.isVerified) Roles.USER else Roles.UNVERIFIED))
     }

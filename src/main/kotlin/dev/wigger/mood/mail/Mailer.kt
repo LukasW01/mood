@@ -12,7 +12,11 @@ class Mailer {
     @Inject
     private lateinit var mailer: ReactiveMailer
     
-    fun send(to: String, subject: String, body: String): Uni<Void> = try {
+    fun send(
+        to: String,
+        subject: String,
+        body: String,
+    ): Uni<Void> = try {
         mailer.send(Mail.withHtml(to, subject, body))
     } catch (e: Exception) {
         Log.error(e.message)
