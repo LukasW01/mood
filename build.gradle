@@ -35,7 +35,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-mailer'
     implementation 'io.quarkus:quarkus-hibernate-orm-panache'
     implementation 'io.quarkus:quarkus-hibernate-orm-panache-kotlin'
-    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.0.7'
+    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.1'
     implementation 'io.quarkiverse.bucket4j:quarkus-bucket4j:1.0.4'
     implementation 'com.nulab-inc:zxcvbn:1.9.0'
     testImplementation 'io.quarkus:quarkus-junit5'
