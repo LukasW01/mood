@@ -37,7 +37,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-hibernate-orm-panache-kotlin'
     compileOnly 'org.mvnpm:bootstrap:5.3.5'
     compileOnly 'org.mvnpm:alpinejs:3.14.9'
-    compileOnly 'org.mvnpm:htmx.org:1.9.12'
+    compileOnly 'org.mvnpm:htmx.org:2.0.4'
     implementation 'io.quarkiverse.web-bundler:quarkus-web-bundler:1.8.1'
     implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.3'
     implementation 'io.quarkiverse.bucket4j:quarkus-bucket4j:1.0.4'
