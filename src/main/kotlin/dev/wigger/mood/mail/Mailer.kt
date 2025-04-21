@@ -11,7 +11,14 @@ import jakarta.inject.Inject
 class Mailer {
     @Inject
     private lateinit var mailer: ReactiveMailer
-    
+
+    /**
+     * A mailer to send email asynchronously
+     * 
+     * @param to
+     * @param subject 
+     * @param body <html>
+     */
     fun send(
         to: String,
         subject: String,

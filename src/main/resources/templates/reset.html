@@ -14,7 +14,7 @@
                         You have initiated a password reset. Please click on the button below to reset your password. If you didn't request the reset, please ignore the email and your password will not be changed.
                     </p>
 
-                    <a type="button" class="btn btn-primary btn-md mt-4" href="https://{context.request().authority()}/auth/password/reset/{token}">Reset Password</a>
+                    <a type="button" class="btn btn-primary btn-md mt-4" href="https://{context.request().authority()}/auth/password/reset/{user.resetToken}">Reset Password</a>
                 </div>
 
                 {#include components/footer /}

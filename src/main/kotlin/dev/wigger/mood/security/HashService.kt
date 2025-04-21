@@ -3,9 +3,6 @@ package dev.wigger.mood.security
 import io.quarkus.elytron.security.common.BcryptUtil
 import jakarta.enterprise.context.ApplicationScoped
 
-/**
- * hashes the strings and checks them
- */
 @ApplicationScoped
 class HashService {
     /**

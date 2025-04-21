@@ -7,7 +7,6 @@ import io.quarkus.qute.TemplateInstance
 import io.vertx.ext.web.RoutingContext
 
 import java.time.LocalDateTime
-import java.util.UUID
 
 /**
  * HTML templates and the Types they require
@@ -28,14 +27,12 @@ object Templates {
     @JvmStatic
     external fun verify(
         user: Users,
-        yesterday: LocalDateTime = LocalDateTime.now().minusDays(1),
     ): TemplateInstance
 
     @JvmStatic
     external fun reset(
         user: Users,
         context: RoutingContext,
-        token: UUID,
     ): TemplateInstance
 
     @JvmStatic

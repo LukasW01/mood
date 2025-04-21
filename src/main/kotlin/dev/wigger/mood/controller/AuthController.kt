@@ -15,6 +15,7 @@ import dev.wigger.mood.security.TokenService
 import dev.wigger.mood.templates.Templates
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.user.Users
+import dev.wigger.mood.util.Password
 import dev.wigger.mood.util.enums.Roles
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
 import dev.wigger.mood.util.userUuid
@@ -97,6 +98,10 @@ class AuthController {
     fun register(@Valid payload: RegisterDto, context: RoutingContext) {
         userService.findByMailExists(payload.mail)
 
+        if(Password.hasSufficientStrength(payload.password)) {
+            throw WebApplicationMapperException("Password strength to weak", 422)
+        }
+        
         Users().apply {
             mail = payload.mail
             firstName = payload.firstName
@@ -173,7 +178,7 @@ class AuthController {
                 userService.updateOne(user.apply { isVerified = true })
             }
 
-            return Templates.verify(user).render()
+            return Templates.verify(user.apply { isVerified = true }).render()
         }
     }
 
@@ -185,7 +190,7 @@ class AuthController {
         Pair(userService.findByMail(payload.mail), UUID.randomUUID()).let { (user, token) ->
             userService.updateOne(user.apply { resetToken = token })
 
-            mailer.send(user.mail, "Password reset | mood", Templates.reset(user, context, token).render()).await()
+            mailer.send(user.mail, "Password reset | mood", Templates.reset(user.apply { resetToken = token }, context).render()).await()
                 .indefinitely()
         }
     }
@@ -207,6 +212,10 @@ class AuthController {
     @PermitAll
     @Transactional
     fun reset(@Valid payload: ResetDto, token: UUID): String {
+        if(Password.hasSufficientStrength(payload.password)) {
+            throw WebApplicationMapperException("Password strength to weak", 422)
+        }
+        
         if (payload.password != payload.passwordRepeat) {
             throw WebApplicationMapperException("Passwords do not match", 422)
         }

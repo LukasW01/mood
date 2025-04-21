@@ -1,6 +1,6 @@
 {#include components/header /}
 
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100" x-data="{ password: '', passwordRepeat: '' }">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
@@ -14,22 +14,22 @@
                         Enter your new password below
                     </p>
 
-                    <form hx-target="body" hx-put="/auth/password/reset/{user.resetToken}" hx-ext="json-enc" x-data="{ password: '', passwordRepeat: '' }">
+                    <form hx-target="body" hx-put="/auth/password/reset/{user.resetToken}" hx-ext="json-enc">
                         <div class="mb-3 text-start">
                             <label for="password" class="form-label">Password:</label>
-                            <input type="password" class="form-control" id="password" name="password" x-model="password">
+                            <input type="password" class="form-control" id="password" name="password" required x-model="password">
                         </div>
 
                         <div class="mb-3 text-start">
                             <label for="passwordRepeat" class="form-label">Confirm Password:</label>
-                            <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" x-model="passwordRepeat" required>
+                            <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" required x-model="passwordRepeat">
                             <template x-if="passwordRepeat && password !== passwordRepeat">
                                 <div class="text-danger mt-1">Passwords do not match</div>
                             </template>
                         </div>
 
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-md" :disabled="!password || password !== passwordRepeat" required>
+                            <button type="submit" class="btn btn-primary btn-md" :disabled="!password || password !== passwordRepeat">
                                 Reset Password
                             </button>
                         </div>
