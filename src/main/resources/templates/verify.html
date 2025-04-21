@@ -13,7 +13,7 @@
                         {#if user.isVerified}
                             Your account has been verified. Thanks for signing up!
                         {/if}
-                        {#if !user.isVerified && user.dateJoined.isBefore(yesterday)}
+                        {#if !user.isVerified}
                             Verification is not possible because the account was created over a working day ago and has not been verified within this period
                         {/if}
                     </p>

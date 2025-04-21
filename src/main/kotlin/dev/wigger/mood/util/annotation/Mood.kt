@@ -10,5 +10,6 @@ import kotlin.reflect.KClass
 annotation class Mood(
     val message: String = "Invalid mood",
     val groups: Array<KClass<*>> = [],
+    @Suppress("TYPE_ALIAS")
     val payload: Array<KClass<out Payload>> = [],
 )

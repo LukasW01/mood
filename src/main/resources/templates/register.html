@@ -14,7 +14,7 @@
                         Your account has been created successfully. Please click the button below to verify your account.
                     </p>
 
-                    <a type="button" class="btn btn-primary btn-md mt-4" href="https://{context.request().authority()}/auth/verify/${user.verifyToken}">Verify Account</a>
+                    <a type="button" class="btn btn-primary btn-md mt-4" href="https://{context.request().authority()}/auth/verify/{user.verifyToken}">Verify Account</a>
                 </div>
 
                 {#include components/footer /}

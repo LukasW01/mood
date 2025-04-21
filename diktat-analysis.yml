@@ -17,5 +17,3 @@
   configuration:
     maxParameterListSize: '3'
   ignoreAnnotated: [ CheckedTemplate ]
-- name: TYPE_ALIAS
-  enabled: false

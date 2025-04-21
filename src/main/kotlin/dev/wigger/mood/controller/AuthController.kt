@@ -98,7 +98,7 @@ class AuthController {
     fun register(@Valid payload: RegisterDto, context: RoutingContext) {
         userService.findByMailExists(payload.mail)
 
-        if(Password.hasSufficientStrength(payload.password)) {
+        if (!Password.hasSufficientStrength(payload.password)) {
             throw WebApplicationMapperException("Password strength to weak", 422)
         }
         
@@ -177,8 +177,7 @@ class AuthController {
             if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
                 userService.updateOne(user.apply { isVerified = true })
             }
-
-            return Templates.verify(user.apply { isVerified = true }).render()
+            return Templates.verify(user.apply { isVerified = (user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) }).render()
         }
     }
 
@@ -212,7 +211,7 @@ class AuthController {
     @PermitAll
     @Transactional
     fun reset(@Valid payload: ResetDto, token: UUID): String {
-        if(Password.hasSufficientStrength(payload.password)) {
+        if (!Password.hasSufficientStrength(payload.password)) {
             throw WebApplicationMapperException("Password strength to weak", 422)
         }
         

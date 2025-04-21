@@ -1,20 +1,21 @@
 package dev.wigger.mood.util
 
-import com.nulabinc.zxcvbn.Zxcvbn
-
 /**
- *  Password strength is getting interpreted in Zxcvbn as follows:
+ *  Password strength is getting interpreted as follows:
  *
- * # Integer from 0-4 (useful for implementing a strength bar)
- * # 0 Weak        （guesses < 10^3 + 5）
- * # 1 Fair        （guesses < 10^6 + 5）
- * # 2 Good        （guesses < 10^8 + 5）
- * # 3 Strong      （guesses < 10^10 + 5）
- * # 4 Very strong （guesses >= 10^10 + 5）
- * strength.score
+ *  - Length: >= 8
+ *  - Number
+ *  - UPPERCASE
+ *  - lowercase
+ *  - Special character
  */
 class Password {
     companion object {
-        fun hasSufficientStrength(password: String): Boolean = Zxcvbn().measure(password).score >= 2
+        fun hasSufficientStrength(password: String): Boolean =
+            password.length >= 8 &&
+                    password.any { it.isDigit() } &&
+                    password.any { it.isUpperCase() } &&
+                    password.any { it.isLowerCase() } &&
+                    password.any { "!@#\$%^&*()_+-=[]{}|;:'\",.<>?".contains(it) }
     }
 }

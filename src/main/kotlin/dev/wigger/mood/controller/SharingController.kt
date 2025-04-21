@@ -31,7 +31,7 @@ import java.util.UUID
 
 @ApplicationScoped
 @Path("/")
-@Produces(MediaType.APPLICATION_XML)
+@Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @SecurityScheme(
     scheme = "bearer",

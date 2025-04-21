@@ -1,11 +1,12 @@
 {#include components/header /}
 
-<body class="d-flex flex-column h-100" x-data="{ password: '', passwordRepeat: '' }">
+<body class="d-flex flex-column h-100">
     <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
                 <div class="text-center p-4">
                     {#include components/title /}
+                    {#include components/noscript /}
 
                     <p class="fs-5 text-dark mb-3">
                         Hi {user.firstName ?: user.mail}!
@@ -14,22 +15,21 @@
                         Enter your new password below
                     </p>
 
-                    <form hx-target="body" hx-put="/auth/password/reset/{user.resetToken}" hx-ext="json-enc">
+                    <form hx-target="body" hx-put="/auth/password/reset/{user.resetToken}" hx-ext="json-enc"  hx-on="htmx:responseError: if (event.detail.xhr.responseText.match(/text=(.*?),/)) document.getElementById('error-message').textContent = event.detail.xhr.responseText.match(/text=(.*?),/)[1];">
                         <div class="mb-3 text-start">
                             <label for="password" class="form-label">Password:</label>
-                            <input type="password" class="form-control" id="password" name="password" required x-model="password">
+                            <input type="password" class="form-control" id="password" name="password" required>
                         </div>
 
                         <div class="mb-3 text-start">
                             <label for="passwordRepeat" class="form-label">Confirm Password:</label>
-                            <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" required x-model="passwordRepeat">
-                            <template x-if="passwordRepeat && password !== passwordRepeat">
-                                <div class="text-danger mt-1">Passwords do not match</div>
-                            </template>
+                            <input type="password" class="form-control" id="passwordRepeat" name="passwordRepeat" required>
                         </div>
 
+                        <div class="text-danger mb-3" id="error-message"></div>
+
                         <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-primary btn-md" :disabled="!password || password !== passwordRepeat">
+                            <button type="submit" class="btn btn-primary btn-md">
                                 Reset Password
                             </button>
                         </div>

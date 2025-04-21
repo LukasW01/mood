@@ -6,8 +6,6 @@ import io.quarkus.qute.CheckedTemplate
 import io.quarkus.qute.TemplateInstance
 import io.vertx.ext.web.RoutingContext
 
-import java.time.LocalDateTime
-
 /**
  * HTML templates and the Types they require
  */

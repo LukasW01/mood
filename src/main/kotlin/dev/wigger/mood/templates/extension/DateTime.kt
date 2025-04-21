@@ -7,4 +7,8 @@ import java.time.LocalDateTime
 object DateTime {
     @JvmStatic
     fun now(): LocalDateTime = LocalDateTime.now()
+    
+    fun minus(days: Long): LocalDateTime = LocalDateTime.now().minusDays(days)
+    
+    fun plus(days: Long): LocalDateTime = LocalDateTime.now().plusDays(days)
 }

@@ -13,11 +13,11 @@ class Mailer {
     private lateinit var mailer: ReactiveMailer
 
     /**
-     * A mailer to send email asynchronously
-     * 
+     * Mailer for asynchronous e-mail delivery
+     *
      * @param to
-     * @param subject 
-     * @param body <html>
+     * @param subject
+     * @param body (html)
      */
     fun send(
         to: String,
