@@ -2,22 +2,12 @@
   configuration:
     domainName: dev.wigger.mood
     disabledChapters: "Comments"
-    kotlinVersion: 1.9
-- name: MAGIC_NUMBER
-  enabled: false
-- name: FILE_NAME_MATCH_CLASS
-  enabled: false
-- name: TYPE_ALIAS
-  enabled: false
-- name: FILE_WILDCARD_IMPORTS
-  enabled: false
-- name: ANNOTATION_NEW_LINE
-  enabled: false 
+    kotlinVersion: 2.0
 - name: TOO_LONG_FUNCTION
   enabled: true
   ignoreAnnotated: [ Test ]
   configuration:
-    maxFunctionLength: '45'
+    maxFunctionLength: '30'
 - name: LONG_LINE
   enabled: true
   configuration:
@@ -25,23 +15,7 @@
 - name: TOO_MANY_PARAMETERS
   enabled: true
   configuration:
-    maxParameterListSize: '6'
-  ignoreAnnotated: [ GetMapping ]
-- name: COMPLEX_EXPRESSION
+    maxParameterListSize: '3'
+  ignoreAnnotated: [ CheckedTemplate ]
+- name: TYPE_ALIAS
   enabled: false
-  ignoreAnnotated: [ Test ]
-- name: TRAILING_COMMA
-  enabled: true
-  configuration:
-    valueArgument: true
-    valueParameter: true
-    referenceExpression: true
-    whenConditions: false
-    collectionLiteral: true
-    typeArgument: true
-    typeParameter: true
-    destructuringDeclaration: true
-- name: BACKTICKS_PROHIBITED
-  enabled: true
-  ignoreAnnotated: [ Test, ParameterizedTest, ArchTest ]
-

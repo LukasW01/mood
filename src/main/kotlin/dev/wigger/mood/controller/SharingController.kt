@@ -1,11 +1,16 @@
 package dev.wigger.mood.controller
 
-import dev.wigger.mood.dto.*
+import dev.wigger.mood.dto.SharingDelegatorDto
+import dev.wigger.mood.dto.SharingSubmitDto
+import dev.wigger.mood.dto.SharingUpdateDto
+import dev.wigger.mood.dto.UuidTokenDto
+import dev.wigger.mood.dto.toDelegatorDto
 import dev.wigger.mood.entry.EntryService
 import dev.wigger.mood.shareing.Sharing
 import dev.wigger.mood.shareing.SharingService
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
+import dev.wigger.mood.util.userUuid
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
@@ -25,7 +30,9 @@ import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
 import java.util.UUID
 
 @ApplicationScoped
-@Path("/") @Produces(MediaType.APPLICATION_JSON) @Consumes(MediaType.APPLICATION_JSON)
+@Path("/")
+@Produces(MediaType.APPLICATION_XML)
+@Consumes(MediaType.APPLICATION_JSON)
 @SecurityScheme(
     scheme = "bearer",
     type = SecuritySchemeType.HTTP,
@@ -40,79 +47,72 @@ class SharingController {
     
     @Inject
     private lateinit var entryService: EntryService
-    
-    @GET @Path("/sharing/delegator")
-    @RolesAllowed("USER")
-    fun delegator(ctx: SecurityContext): List<SharingDelegatorDto> = sharingService.findByUserId(UUID.fromString(ctx.userPrincipal.name)).map { sharing ->
-        sharing.apply {
-            entry = entryService.findByUserIdPermission(sharing.delegator.id, sharing.permissions)
-        }.toDelegatorDto()
-    }
 
-    @GET @Path("/sharing/token/create")
+    @GET
+    @Path("/sharing/delegator")
     @RolesAllowed("USER")
-    @Transactional
-    fun createToken(ctx: SecurityContext): SharingTokenDto {
-        val user = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
-        val token = UUID.randomUUID()
-        
-        userService.updateOne(
-            user.id,
-            user.apply { sharingToken = token },
-        )
-        
-        return SharingTokenDto(token)
-    }
-    
-    @POST @Path("/sharing/token/connect")
-    @RolesAllowed("USER")
-    @Transactional
-    fun connectToken(@Valid payload: SharingSubmittDto, ctx: SecurityContext) {
-        val users = userService.findByIdUuid(UUID.fromString(ctx.userPrincipal.name))
-        val delegators = userService.findBySharingToken(payload.token)
-
-        if (users.id == delegators.id) {
-            throw WebApplicationMapperException("Cannot connect the same user", 422)
-        }
-        
-        sharingService.findByUserIdAndDelegatorId(users.id, delegators.id)?.let {
-            throw WebApplicationMapperException("Cannot connect a user twice", 422)
+    fun delegator(ctx: SecurityContext): List<SharingDelegatorDto> =
+        sharingService.findByUserUuid(ctx.userUuid()).map { sharing ->
+            sharing.apply {
+                entry = entryService.findByIdPermission(sharing.delegator.id, sharing.permissions)
+            }.toDelegatorDto()
         }
 
-        sharingService.persistOne(Sharing().apply {
-            user = users
-            delegator = delegators
-            permissions = payload.permissions
-        })
-    }
-    
-    @DELETE @Path("/sharing/{id}")
+    @DELETE
+    @Path("/sharing/{id}")
     @RolesAllowed("USER")
     @Transactional
-    fun delete(id: UUID, ctx: SecurityContext) {
-        sharingService.findByUserIdAndDelegatorId(UUID.fromString(ctx.userPrincipal.name), id)
-            ?: throw WebApplicationMapperException("User and delegator do not share anything at the moment", 422)
-        
-        sharingService.delete(UUID.fromString(ctx.userPrincipal.name), id)
-    }
-    
-    @PUT @Path("/sharing/{id}")
+    fun delete(id: UUID, ctx: SecurityContext) =
+        sharingService.findByUserAndDelegator(ctx.userUuid(), id).let { sharing ->
+            sharingService.deleteByUserUuid(ctx.userUuid(), sharing.delegator.id)
+        }
+
+    @PUT
+    @Path("/sharing/{id}")
     @RolesAllowed("USER")
     @Transactional
     fun update(
         @Valid payload: SharingUpdateDto,
         id: UUID,
         ctx: SecurityContext,
-    ) {
-        val sharing = sharingService.findByUserIdAndDelegatorId(UUID.fromString(ctx.userPrincipal.name), id)
-            ?: throw WebApplicationMapperException("User and delegator do not share anything at the moment", 422)
+    ) =
+        sharingService.findByUserAndDelegator(ctx.userUuid(), id)
+            .apply { permissions = payload.permissions }
+            .let { sharing -> sharingService.updateOne(sharing) }
 
-        sharingService.updateOne(
-            UUID.fromString(ctx.userPrincipal.name),
-            id,
-            sharing.apply {
-                permissions = payload.permissions
-            },
-        )
+    @PUT
+    @Path("/sharing/token/create")
+    @RolesAllowed("USER")
+    @Transactional
+    fun createToken(ctx: SecurityContext): UuidTokenDto =
+        UUID.randomUUID().let { token ->
+            userService.findByIdUuid(ctx.userUuid()).let { user ->
+                userService.updateOne(user.apply { sharingToken = token })
+            }
+            UuidTokenDto(token)
+        }
+
+    @POST
+    @Path("/sharing/token/connect/{token}")
+    @RolesAllowed("USER")
+    @Transactional
+    fun connectToken(
+        @Valid payload: SharingSubmitDto,
+        token: UUID,
+        ctx: SecurityContext
+    ) {
+        Pair(userService.findByIdUuid(ctx.userUuid()), userService.findBySharingToken(token)).let { (user, delegator) ->
+            sharingService.findByUserAndDelegatorExists(user.id, delegator.id)
+
+            if (user.id == delegator.id) {
+                throw WebApplicationMapperException("Cannot connect the same user", 422)
+            }
+
+            sharingService.persistOne(Sharing().apply {
+                this.user = user
+                this.delegator = delegator
+                this.permissions = payload.permissions
+            })
+        }
     }
 }

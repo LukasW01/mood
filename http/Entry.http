@@ -1,15 +1,3 @@
-### Login
-POST http://localhost:8080/auth/login
-Content-Type: application/json
-
-{
-  "mail": "mail@example.com",
-  "password": "securePassword"
-}
-
-> {% client.global.set("auth_token", response.body.token) %}
-
-
 ### Save a new mood-entry
 POST http://localhost:8080/entry
 Content-Type: application/json

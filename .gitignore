@@ -2,6 +2,9 @@
 .gradle/
 build/
 
+# NPM
+node_modules/
+
 # Eclipse
 .project
 .classpath

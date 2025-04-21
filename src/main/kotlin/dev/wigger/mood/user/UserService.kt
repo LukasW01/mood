@@ -12,19 +12,26 @@ class UserService {
 
     fun persistOne(users: Users) = userRepository.persistOne(users)
 
-    fun deleteByMail(mail: String) = userRepository.deleteByMail(mail)
+    fun deleteByUuid(uuid: UUID) = userRepository.deleteByUuid(uuid)
 
-    fun updateOne(id: UUID, users: Users) = userRepository.updateOne(id, users)
+    fun updateOne(users: Users) = userRepository.updateOne(users)
 
-    fun findByMail(mail: String): Users = userRepository.findByMail(mail) ?: throw WebApplicationMapperException("User does not exist", 404)
+    fun findByIdUuid(id: UUID): Users = userRepository.findByIdUuid(id)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
     
-    fun findByIdUuid(id: UUID): Users = userRepository.findByIdUuid(id) ?: throw WebApplicationMapperException("User does not exist", 404)
-    
-    fun findByVerifyToken(token: UUID): Users = userRepository.findByVerifyToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
+    fun findByVerifyToken(token: UUID): Users = userRepository.findByVerifyToken(token)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
 
-    fun findByResetToken(token: UUID): Users = userRepository.findByResetToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
+    fun findByResetToken(token: UUID): Users = userRepository.findByResetToken(token)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
 
-    fun findBySharingToken(token: UUID): Users = userRepository.findBySharingToken(token) ?: throw WebApplicationMapperException("User does not exist", 404)
-    
-    fun findByMailException(mail: String): Users? = userRepository.findByMail(mail)?.let { throw WebApplicationMapperException("User already exists", 422) }
+    fun findBySharingToken(token: UUID): Users = userRepository.findBySharingToken(token)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
+
+    fun findByMail(mail: String): Users = userRepository.findByMail(mail)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
+
+    fun findByMailExists(mail: String): Users? = userRepository.findByMail(mail)?.let {
+        throw WebApplicationMapperException("User already exists", 422)
+    }
 }

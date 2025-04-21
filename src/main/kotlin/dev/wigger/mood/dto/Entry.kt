@@ -12,7 +12,7 @@ data class EntryDto @JsonbCreator constructor(
     var color: String,
 )
 
-data class EntrySaveDto @JsonbCreator constructor(
+data class EntrySubmitDto @JsonbCreator constructor(
     var mood: String,
     var journal: String,
     val date: LocalDate,

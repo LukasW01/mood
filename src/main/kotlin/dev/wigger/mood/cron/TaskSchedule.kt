@@ -1,8 +1,7 @@
-package dev.wigger.mood.schedule
+package dev.wigger.mood.cron
 
 import dev.wigger.mood.user.UserRepository
 import io.quarkus.scheduler.Scheduled
-import io.quarkus.scheduler.ScheduledExecution
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject
 import jakarta.transaction.Transactional
@@ -14,13 +13,13 @@ class TaskSchedule {
 
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")
-    fun midnight(execution: ScheduledExecution) {
-        userRepository.deleteUnverifiedAndOldUsers()
+    fun deleteUnverifiedUsers() {
+        userRepository.deleteUnverifiedUsers()
     }
 
     @Transactional
     @Scheduled(cron = "0 0 * * * ?")
-    fun midnightToken(execution: ScheduledExecution) {
+    fun resetToken() {
         userRepository.updateResetTokenToNull()
         userRepository.updateSharingTokenToNull()
     }

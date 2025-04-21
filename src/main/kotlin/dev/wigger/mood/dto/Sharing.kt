@@ -4,7 +4,6 @@ import dev.wigger.mood.shareing.Sharing
 import dev.wigger.mood.util.enums.Permissions
 import jakarta.json.bind.annotation.JsonbCreator
 import java.time.ZonedDateTime
-import java.util.UUID
 
 data class SharingDto @JsonbCreator constructor(
     var createdAt: ZonedDateTime?,
@@ -26,12 +25,7 @@ data class SharingUpdateDto @JsonbCreator constructor(
     val permissions: Permissions,
 )
 
-data class SharingTokenDto @JsonbCreator constructor(
-    val token: UUID,
-)
-
-data class SharingSubmittDto @JsonbCreator constructor(
-    val token: UUID,
+data class SharingSubmitDto @JsonbCreator constructor(
     val permissions: Permissions,
 )
 

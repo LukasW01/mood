@@ -10,7 +10,7 @@ import java.time.temporal.ChronoUnit
 @ApplicationScoped
 class TokenService {
     /**
-     * creates the jwt token
+     * Creates a jwt token
      * @param users user object that contains details e.g. username or user id
      * @param groups role enum for any Role based authentication
      * @return jwt with claimed values. signed by the *.pem keys in resources folder.

@@ -1,32 +1,19 @@
-### Login
-POST http://localhost:8080/auth/login
-Content-Type: application/json
-
-{
-  "mail": "mail@example.com",
-  "password": "securePassword"
-}
-
-> {% client.global.set("auth_token", response.body.token) %}
-
-
 ### Get all delegator of user
 GET http://localhost:8080/sharing/delegator
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
-### Get all delegator of user
-GET http://localhost:8080/sharing/token/create
+### Create Shareing token
+PUT http://localhost:8080/sharing/token/create
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 ### Connect users
-POST http://localhost:8080/sharing/token/connect
+POST http://localhost:8080/sharing/token/connect/1
 Content-Type: application/json
 Authorization: Bearer {{auth_token}}
 
 {
-  "token": "99edbd32-d792-4683-8ba5-3b9d66bce1cd",
   "permissions": "ALL"
 }
 

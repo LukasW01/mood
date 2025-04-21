@@ -13,16 +13,17 @@ class SharingService {
 
     fun persistOne(sharing: Sharing) = sharingRepository.persistOne(sharing)
     
-    fun delete(userId: UUID, delegatorId: UUID) = sharingRepository.delete(userId, delegatorId)
+    fun deleteByUserUuid(userId: UUID, delegatorId: UUID) = sharingRepository.deleteByUserUuid(userId, delegatorId)
 
-    fun findByUserId(userId: UUID): List<Sharing> = sharingRepository.findByUserId(userId)
-        ?: throw WebApplicationMapperException("No user found", 404)
-    
-    fun findByUserIdAndDelegatorId(userId: UUID, delegatorId: UUID): Sharing? = sharingRepository.findByUserIdAndDelegatorId(userId, delegatorId)
+    fun updateOne(sharing: Sharing) = sharingRepository.updateOne(sharing)
 
-    fun updateOne(
-        userId: UUID,
-        delegatorId: UUID,
-        sharing: Sharing,
-    ) = sharingRepository.updateOne(userId, delegatorId, sharing)
+    fun findByUserUuid(userId: UUID): List<Sharing> = sharingRepository.findByUserUuid(userId)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
+
+    fun findByUserAndDelegator(userId: UUID, delegatorId: UUID) = sharingRepository.findByUserAndDelegator(userId, delegatorId)
+        ?: throw WebApplicationMapperException("User does not exist", 404)
+
+    fun findByUserAndDelegatorExists(userId: UUID, delegatorId: UUID) = sharingRepository.findByUserAndDelegator(userId, delegatorId)?.let {
+        throw WebApplicationMapperException("Cannot connect a user twice", 422)
+    }
 }
