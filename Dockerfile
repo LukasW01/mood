@@ -1,6 +1,6 @@
 FROM quay.io/quarkus/quarkus-micro-image:2.0
 ARG PROJECT=mood
-ARG VERSION=0.5
+ARG VERSION=0.6
 ARG PORT=8080
 
 WORKDIR /app
