@@ -8,9 +8,9 @@ A RESTful API for mood tracking
 
 ### Prerequisites
 
-- Java 21 (GraalVM)
-- Gradle
-- Docker
+- [Java 21 (GraalVM)](https://www.graalvm.org/downloads/)
+- [Gradle](https://gradle.org/install/)
+- [Docker](https://docs.docker.com/get-docker/)
 
 ### Installation
 
