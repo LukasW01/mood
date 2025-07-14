@@ -39,7 +39,7 @@ dependencies {
     compileOnly 'org.mvnpm:alpinejs:3.14.9'
     compileOnly 'org.mvnpm:htmx.org:2.0.5'
     implementation 'io.quarkiverse.web-bundler:quarkus-web-bundler:1.8.1'
-    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.4'
+    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.6'
     implementation 'io.quarkiverse.bucket4j:quarkus-bucket4j:1.0.5'
     implementation 'com.nulab-inc:zxcvbn:1.9.0'
     testImplementation 'io.quarkus:quarkus-junit5'
