@@ -35,7 +35,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-hibernate-orm-panache'
     implementation 'io.quarkus:quarkus-hibernate-validator'
     implementation 'io.quarkus:quarkus-hibernate-orm-panache-kotlin'
-    compileOnly 'org.mvnpm:bootstrap:5.3.7'
+    compileOnly 'org.mvnpm:bootstrap:5.3.8'
     compileOnly 'org.mvnpm:alpinejs:3.14.9'
     compileOnly 'org.mvnpm:htmx.org:2.0.6'
     implementation 'io.quarkiverse.web-bundler:quarkus-web-bundler:1.9.1'
