@@ -1,4 +1,4 @@
-package dev.wigger.mood.util
+package dev.wigger.mood.util.mapper
 
 import io.vertx.core.net.HostAndPort
 import io.vertx.ext.web.RoutingContext

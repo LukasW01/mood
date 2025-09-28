@@ -9,7 +9,7 @@ import dev.wigger.mood.entry.Entry
 import dev.wigger.mood.entry.EntryService
 import dev.wigger.mood.user.UserService
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
-import dev.wigger.mood.util.userUuid
+import dev.wigger.mood.util.mapper.userUuid
 import jakarta.annotation.security.RolesAllowed
 import jakarta.enterprise.context.ApplicationScoped
 import jakarta.inject.Inject

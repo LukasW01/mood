@@ -1,5 +1,6 @@
 package dev.wigger.mood.templates
 
+import dev.wigger.mood.dto.ErrorResponse
 import dev.wigger.mood.user.Users
 
 import io.quarkus.qute.CheckedTemplate
@@ -39,5 +40,12 @@ object Templates {
     ): TemplateInstance
 
     @JvmStatic
-    external fun success(): TemplateInstance
+    external fun success(
+        error: ErrorResponse
+    ): TemplateInstance
+    
+    @JvmStatic
+    external fun error(
+        error: ErrorResponse
+    ): TemplateInstance
 }

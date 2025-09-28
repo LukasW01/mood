@@ -2,6 +2,7 @@ package dev.wigger.mood.controller
 
 import dev.wigger.mood.dto.AuthResponseDto
 import dev.wigger.mood.dto.DeleteDto
+import dev.wigger.mood.dto.ErrorResponse
 import dev.wigger.mood.dto.LoginDto
 import dev.wigger.mood.dto.RegisterDto
 import dev.wigger.mood.dto.RequestResetDto
@@ -18,7 +19,7 @@ import dev.wigger.mood.user.Users
 import dev.wigger.mood.util.Password
 import dev.wigger.mood.util.enums.Roles
 import dev.wigger.mood.util.mapper.WebApplicationMapperException
-import dev.wigger.mood.util.userUuid
+import dev.wigger.mood.util.mapper.userUuid
 
 import io.quarkiverse.bucket4j.runtime.RateLimited
 import io.quarkiverse.bucket4j.runtime.resolver.IpResolver
@@ -38,6 +39,7 @@ import jakarta.ws.rs.PUT
 import jakarta.ws.rs.Path
 import jakarta.ws.rs.Produces
 import jakarta.ws.rs.core.MediaType
+import jakarta.ws.rs.core.Response
 import jakarta.ws.rs.core.SecurityContext
 import org.eclipse.microprofile.openapi.annotations.enums.SecuritySchemeType
 import org.eclipse.microprofile.openapi.annotations.security.SecurityScheme
@@ -172,12 +174,12 @@ class AuthController {
     @Consumes(MediaType.TEXT_PLAIN)
     @PermitAll
     @Transactional
-    fun verify(token: UUID): String {
+    fun verify(token: UUID): Response {
         userService.findByVerifyToken(token).let { user ->
             if (!user.isVerified && user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) {
                 userService.updateOne(user.apply { isVerified = true })
             }
-            return Templates.verify(user.apply { isVerified = (user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) }).render()
+            return Response.ok(Templates.verify(user.apply { isVerified = (user.dateJoined.isAfter(LocalDateTime.now().minusDays(1))) }).render()).build()
         }
     }
 
@@ -199,9 +201,9 @@ class AuthController {
     @Produces(MediaType.TEXT_HTML)
     @Consumes(MediaType.TEXT_PLAIN)
     @PermitAll
-    fun resetHtml(token: UUID): String {
+    fun resetHtml(token: UUID): Response {
         userService.findByResetToken(token).let { user ->
-            return Templates.resetForm(user).render()
+            return Response.ok(Templates.resetForm(user).render()).build()
         }
     }
 
@@ -210,13 +212,17 @@ class AuthController {
     @Produces(MediaType.TEXT_HTML)
     @PermitAll
     @Transactional
-    fun reset(@Valid payload: ResetDto, token: UUID): String {
+    fun reset(@Valid payload: ResetDto, token: UUID): Response {
         if (!Password.hasSufficientStrength(payload.password)) {
-            throw WebApplicationMapperException("Password strength to weak", 422)
+            return Response.status(200)
+                .entity(Templates.error(ErrorResponse("Password strength too weak", 422)).render())
+                .build()
         }
         
         if (payload.password != payload.passwordRepeat) {
-            throw WebApplicationMapperException("Passwords do not match", 422)
+            return Response.status(200)
+                .entity(Templates.error(ErrorResponse("Passwords do not match", 422)).render())
+                .build()
         }
 
         userService.findByResetToken(token).let { user ->
@@ -226,6 +232,6 @@ class AuthController {
             })
         }
 
-        return Templates.success().render()
+        return Response.ok(Templates.success(ErrorResponse("Changes saved", 200)).render()).build()
     }
 }
