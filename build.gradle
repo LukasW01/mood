@@ -39,7 +39,7 @@ dependencies {
     compileOnly 'org.mvnpm:htmx.org:2.0.7'
     compileOnly 'org.mvnpm:htmx-ext-json-enc:2.0.2'
     implementation 'io.quarkiverse.web-bundler:quarkus-web-bundler:1.9.3'
-    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.8'
+    implementation 'io.quarkiverse.loggingsentry:quarkus-logging-sentry:2.1.9'
     implementation 'io.quarkiverse.bucket4j:quarkus-bucket4j:1.0.7'
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.rest-assured:rest-assured'
