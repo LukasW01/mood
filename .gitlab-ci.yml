@@ -4,7 +4,11 @@ stages:
   - docker
 
 variables:
+  # Docker
+  DOCKER_API_VERSION: "1.44"
+  # Registry
   REGISTRY: ghcr.io
+  # Gradle
   GRADLE_USER_HOME: "$CI_PROJECT_PATH/gradle"
 
 default:
@@ -27,8 +31,6 @@ gradle:diktat:
   
 gradle:build:
   stage: gradle
-  services:
-    - docker:dind
   image: docker:cli
   before_script: 
     - apk add --no-cache openjdk21 gradle
@@ -42,8 +44,6 @@ gradle:build:
 
 docker_build:
   stage: docker
-  services:
-    - docker:dind
   image: docker:cli
   before_script:
     - docker login $REGISTRY -u $REGISTRY_USER -p $REGISTRY_PASSWORD
