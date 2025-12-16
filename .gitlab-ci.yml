@@ -23,6 +23,10 @@ gradle:test:
   stage: gradle
   image: gradle:jdk21-alpine
   script: gradle test 
+  artifacts:
+    when: always
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
 
 gradle:diktat:
   stage: gradle
@@ -68,4 +72,7 @@ qodana:
   script: qodana scan
   only:
     - schedules
+  artifacts:
+    paths:
+      - qodana/
 
