@@ -1,5 +1,6 @@
 stages:
   - gradle
+  - npm
   - qodana
   - docker
 
@@ -14,10 +15,14 @@ variables:
 default:
   cache:
     key: "$CI_COMMIT_REF_NAME"
-    policy: push
     paths:
       - build
       - .gradle
+      - node_modules/
+      - .pnpm-store/
+  before_script:
+    - wget -qO /bin/pnpm "https://github.com/pnpm/pnpm/releases/latest/download/pnpm-linuxstatic-x64" && chmod +x /bin/pnpm
+    - pnpm config set store-dir .pnpm-store
 
 gradle:test:
   stage: gradle
@@ -45,6 +50,18 @@ gradle:build:
       - "build/*-runner"
   only:
     - tags
+
+npm:build:
+  stage: npm
+  script:
+    - pnpm i
+    - pnpm build
+
+npm:lint:
+  stage: npm
+  script:
+    - pnpm i
+    - pnpm lint
 
 docker_build:
   stage: docker

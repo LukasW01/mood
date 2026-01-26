@@ -4,6 +4,8 @@ build/
 
 # NPM
 node_modules/
+*.js
+*.css
 
 # Eclipse
 .project
