@@ -53,12 +53,14 @@ gradle:build:
 
 npm:build:
   stage: npm
+  image: node:alpine
   script:
     - pnpm i
     - pnpm build
 
 npm:lint:
   stage: npm
+  image: node:alpine
   script:
     - pnpm i
     - pnpm lint
