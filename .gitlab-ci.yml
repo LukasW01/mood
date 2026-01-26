@@ -40,16 +40,14 @@ gradle:diktat:
   
 gradle:build:
   stage: gradle
-  image: gradle:jdk21-alpine
+  image: quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21
   script:
-    - gradle build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false
+    - ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false
   artifacts:
     paths:
       - "build/*-runner"
   dependencies:
     - npm:build
-  only:
-    - tags
 
 npm:lint:
   stage: npm
