@@ -40,11 +40,9 @@ gradle:diktat:
   
 gradle:build:
   stage: gradle
-  image: docker:cli
-  before_script: 
-    - apk add --no-cache openjdk21 gradle
+  image: gradle:jdk21-alpine
   script:
-    - ./gradlew build -Dquarkus.package.type=native -Dquarkus.native.container-build=true -x spotlessKotlin diktatCheck
+    - gradle build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=false
   artifacts:
     paths:
       - "build/*-runner"
