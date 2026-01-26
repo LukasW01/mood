@@ -17,7 +17,7 @@ RUN node esbuild.config.mjs
 # Stage 1: Quarkus micro image
 FROM quay.io/quarkus/quarkus-micro-image:2.0
 ARG PROJECT=mood
-ARG VERSION=0.6
+ARG VERSION=0.7
 ARG PORT=8080
 
 WORKDIR /app
