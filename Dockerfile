@@ -27,7 +27,7 @@ RUN ./gradlew build -Dquarkus.native.enabled=true -Dquarkus.package.jar.enabled=
 # Stage 3: Quarkus micro image
 FROM quay.io/quarkus/quarkus-micro-image:2.0
 ARG PROJECT=mood
-ARG VERSION=0.7.2
+ARG VERSION=0.8.0
 ARG PORT=8080
 
 WORKDIR /app
