@@ -3,7 +3,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.allopen" version "2.3.0"
     id 'io.quarkus'
     id "com.saveourtool.diktat" version "2.0.0"
-    id "com.diffplug.spotless" version "8.2.0"
+    id "com.diffplug.spotless" version "8.2.1"
     id "io.mvnpm.gradle.plugin.native-java-plugin" version "1.0.0"
 }
 
