@@ -12,6 +12,11 @@ data class ErrorResponse @JsonbCreator constructor(
     val status: Int,
 )
 
+data class InfoResponse @JsonbCreator constructor(
+    val text: String,
+    val status: Int,
+)
+
 data class UuidTokenDto @JsonbCreator constructor(
     val token: UUID,
 )

@@ -1,7 +1,8 @@
 package dev.wigger.mood
 
 import dev.wigger.mood.controller.InfoController
-import dev.wigger.mood.dto.ErrorResponse
+import dev.wigger.mood.dto.InfoResponse
+import io.quarkus.test.junit.QuarkusTest
 
 import io.vertx.core.http.HttpServerRequest
 import io.vertx.core.net.SocketAddress
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
+@QuarkusTest
 class InfoControllerTest {
     private val infoController = InfoController()
 
@@ -34,6 +36,6 @@ class InfoControllerTest {
     fun testHealth() {
         val response = infoController.health()
         assertEquals(Response.Status.OK.statusCode, response.status)
-        assertEquals(ErrorResponse("Healthy!", Response.Status.OK.statusCode), response.entity)
+        assertEquals(InfoResponse("OK", Response.Status.OK.statusCode), response)
     }
 }
