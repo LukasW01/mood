@@ -16,6 +16,6 @@ class Password {
                     password.any { it.isDigit() } &&
                     password.any { it.isUpperCase() } &&
                     password.any { it.isLowerCase() } &&
-                    password.any { "!@#\$%^&*()_+-=[]{}|;:'\",.<>?".contains(it) }
+                    password.any { "!@#$%^&*()_+-=[]{}|;:'\",.<>?".contains(it) }
     }
 }

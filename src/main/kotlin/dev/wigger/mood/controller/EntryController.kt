@@ -86,7 +86,7 @@ class EntryController {
     @Path("/entry")
     @RolesAllowed("USER")
     @Transactional
-    fun persist(@Valid payload: List<EntrySubmitDto>, ctx: SecurityContext) {
+    fun persist(payload: List<@Valid EntrySubmitDto>, ctx: SecurityContext) {
         entryService.findByUuidAndDateExists(ctx.userUuid(), payload.map { it.date })
 
         payload.groupingBy { it.date }
