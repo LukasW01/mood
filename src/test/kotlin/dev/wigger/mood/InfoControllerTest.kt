@@ -29,7 +29,8 @@ class InfoControllerTest {
         `when`(mockRequest.remoteAddress()).thenReturn(mockRemoteAddress)
         `when`(mockRemoteAddress.host()).thenReturn("192.168.1.1")
 
-        assertEquals("192.168.1.1", infoController.ip(mockContext).ip)
+        val response = infoController.ip(mockContext)
+        assertEquals("192.168.1.1", response.ip)
     }
 
     @Test
