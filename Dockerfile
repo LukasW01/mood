@@ -15,7 +15,7 @@ RUN pnpm i
 RUN pnpm build
 
 # Stage 2: Build quarkus
-FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-21 AS gradle
+FROM quay.io/quarkus/ubi-quarkus-mandrel-builder-image:jdk-25 AS gradle
 
 WORKDIR /app
 COPY --from=frontend /app/src ./src
