@@ -30,9 +30,8 @@ ARG PROJECT=mood
 ARG VERSION=1.0.0
 ARG PORT=8080
 
-WORKDIR /app
-
 # Copy the Quarkus runner
+WORKDIR /app
 COPY --from=gradle "/app/build/*-runner" "/app/mood"
 
 RUN chown 1001 /app && chmod "g+rwX" /app && chown 1001:root /app
