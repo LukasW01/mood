@@ -17,7 +17,7 @@
     "@typescript-eslint/parser": "^8.56.1",
     "globals": "^17.4.0",
     "autoprefixer": "^10.4.27",
-    "esbuild-sass-plugin": "^3.6.0",
+    "esbuild-sass-plugin": "^3.7.0",
     "postcss": "^8.5.8",
     "postcss-preset-env": "^11.2.0",
     "esbuild": "^0.27.3",    
