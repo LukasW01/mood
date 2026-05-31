@@ -11,7 +11,7 @@
     "htmx.org": "^2.0.10"
   },
   "devDependencies": {
-    "@eslint/create-config": "1.11.0",
+    "@eslint/create-config": "2.0.0",
     "@eslint/js": "^9.39.4",
     "@typescript-eslint/eslint-plugin": "^8.59.0",
     "@typescript-eslint/parser": "^8.60.0",
