@@ -13,7 +13,7 @@ include:
 exclude:
   - name: UnusedSymbol
 
-projectJDK: 21
+projectJDK: 25
 
 linter: jetbrains/qodana-jvm-community:latest
 

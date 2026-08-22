@@ -23,7 +23,7 @@ default:
 
 gradle:test:
   stage: gradle
-  image: gradle:jdk21-alpine
+  image: gradle:jdk25-alpine
   script: gradle test 
   variables:
     QUARKUS_PROFILE: test
@@ -34,7 +34,7 @@ gradle:test:
 
 gradle:diktat:
   stage: gradle
-  image: gradle:jdk21-alpine
+  image: gradle:jdk25-alpine
   script: gradle diktatCheck
 
 npm:lint:
