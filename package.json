@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@eslint/create-config": "2.0.0",
-    "@eslint/js": "^9.39.4",
+    "@eslint/js": "^9.39.5",
     "@typescript-eslint/eslint-plugin": "^8.62.1",
     "@typescript-eslint/parser": "^8.62.1",
     "globals": "^17.7.0",
