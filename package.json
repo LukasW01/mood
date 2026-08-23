@@ -19,7 +19,7 @@
     "autoprefixer": "^10.5.2",
     "esbuild-sass-plugin": "^3.6.0",
     "postcss": "^8.5.26",
-    "postcss-preset-env": "^11.3.2",
+    "postcss-preset-env": "^11.4.0",
     "esbuild": "^0.28.1",    
     "eslint": "^9.39.2",
     "typescript": "^6.0.3",
