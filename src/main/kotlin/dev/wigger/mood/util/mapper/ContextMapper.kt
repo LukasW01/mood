@@ -9,4 +9,4 @@ fun SecurityContext.userUuid(): UUID = UUID.fromString(userPrincipal.name)
 
 fun RoutingContext.ip(): String = request().remoteAddress().host()
 
-fun RoutingContext.host(): HostAndPort = request().authority()
+fun RoutingContext.host(): HostAndPort? = request().authority()
