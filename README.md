@@ -34,7 +34,7 @@ The server is configured via environment variables. For local development, see a
 
 | Variable            | Description                                    | Example                                 |
 |---------------------|------------------------------------------------|-----------------------------------------|
-| `QUARKUS_PROFILE`            | Active configuration profile (`dev`, `prod` or `test`) | Configuration profile: prod, dev or test (gradle quarkusDev uses dev) |
+| `QUARKUS_PROFILE`            | Active configuration profile (`dev`, `prod` or `test`) |  |
 | `POSTGRES_JDBC_URL` | JDBC connection URL of the PostgreSQL database | `jdbc:postgresql://localhost:5432/mood` |
 | `POSTGRES_USER`     | Database user                                  | `mood`                                  |
 | `POSTGRES_PW`       | Database password                              |                                         |
