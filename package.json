@@ -6,7 +6,7 @@
     "lint": "eslint src/main/resources/web/**/*.ts*"
   },
   "dependencies": {
-    "bootstrap": "5.3.8",
+    "bootstrap": "5.3.9",
     "htmx-ext-json-enc": "^2.0.3",
     "htmx.org": "^2.0.11"
   },
